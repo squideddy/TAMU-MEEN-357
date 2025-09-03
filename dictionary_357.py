@@ -1,4 +1,4 @@
-
+from 357_dictionary import rover
 
 rover = {}
 rover['wheel_assembly'] = {
@@ -7,7 +7,7 @@ rover['wheel_assembly'] = {
     'speed_reducer':{
         'type':'reverted','diam_pinion':0.04,'diam_gear':0.07,'mass2':1.5}, 
     'motor':{
-        'torque_stall':170.0,'torque_noload':0.0,'speed_noload':3.8,'mass':5.0}
+        'torque_stall':170.0 ,'torque_noload':0.0,'speed_noload':3.8,'mass':5.0}
     }
 
 rover['chassis']={

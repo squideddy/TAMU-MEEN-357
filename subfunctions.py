@@ -1,6 +1,7 @@
 
-def get_mass(): # Computes the total mass of the rover. Uses information in the rover dict.
-    
+file = '357_dictionary.py'
+def get_mass(m1): # Computes the total mass of the rover. Uses information in the rover dict.
+    m1 = ['wheel_assembly']['wheel']['mass']*6
 
 def get_gear_ratio(): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
 def tau_dcmotor(): #Returns the motor shaft torque when given motor shaft speed and a dictionary containing
