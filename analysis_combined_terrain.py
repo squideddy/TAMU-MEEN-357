@@ -1,3 +1,6 @@
+
+"This is a note"
+
 """create a py-file script called analysis_combined_terrain.py in which you use a root-finding method (e.g.,
 bisection method, secant method, etc.) to determine the speed of the rover at various values for the
 coefficient of rolling resistance AND terrain slope. You will plot the results as a surface.
