@@ -2,7 +2,7 @@ from dictionary_357 import rover
 
 def get_mass(): # Computes the total mass of the rover. Uses information in the rover dict.
     mass = rover['wheel_assembly']['wheel']['mass'] * 6
-    print(mass)
+    return mass
 
 def get_gear_ratio(): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
     print('hi')
