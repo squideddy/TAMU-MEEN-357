@@ -1,4 +1,4 @@
-from subfunctions import get_mass
+
 rover = {}
 rover['wheel_assembly'] = {
     'wheel':{
@@ -21,4 +21,3 @@ print('Hello')
 
 print("kjhfsjlkf")
 print('hello')
-print(get_mass())
