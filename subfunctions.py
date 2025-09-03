@@ -1,5 +1,5 @@
+from dictionary_357 import rover
 
-file = '357_dictionary.py'
 def get_mass(m1): # Computes the total mass of the rover. Uses information in the rover dict.
     m1 = ['wheel_assembly']['wheel']['mass']*6
 

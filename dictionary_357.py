@@ -1,4 +1,3 @@
-from 357_dictionary import rover
 
 rover = {}
 rover['wheel_assembly'] = {
