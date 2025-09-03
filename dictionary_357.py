@@ -21,4 +21,4 @@ print('Hello')
 
 print("kjhfsjlkf")
 print('hello')
-print(get_mass)
+print(get_mass())
