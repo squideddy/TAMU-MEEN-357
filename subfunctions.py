@@ -1,7 +1,8 @@
-from dictionary_357 import rover
 
-def get_mass(): # Computes the total mass of the rover. Uses information in the rover dict.
-    mass = rover['wheel_assembly']['wheel']['mass'] * 6
+
+def get_mass(rover1): # Computes the total mass of the rover. Uses information in the rover dict.
+    mass = rover1['wheel_assembly']['wheel']['mass'] * 6
+    # put error if get_mass(a) and a is not a dictionary
     return mass
 
 def get_gear_ratio(): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
