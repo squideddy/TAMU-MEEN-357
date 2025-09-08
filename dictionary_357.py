@@ -16,8 +16,3 @@ rover['science_payload']={
 rover['power_subsys']={
     'mass':90.0}
  
-print(rover['wheel_assembly']['speed_reducer']['mass2'])
-print('Hello')
-
-print("kjhfsjlkf")
-print('hello')
