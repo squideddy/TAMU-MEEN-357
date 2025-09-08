@@ -23,3 +23,7 @@ rover['wheel_assembly'] = {
     'speed_reducer':speed_reducer,
     'motor':motor
     }
+
+rover['chassis'] = chassis
+rover['science_payload'] = science_payload
+rover['power_subsys'] = power_subsys

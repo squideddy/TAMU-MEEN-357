@@ -8,11 +8,22 @@ def get_mass(rover1): # Computes the total mass of the rover. Uses information i
 
 def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
     #gear ratio = diam_gear/diam_pinion
-    return diam_gear/diam_pinion
+    if not isinstance(speed_reducer, dict): 
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    Ng = speed_reducer['diam_gear']/speed_reducer['diam_pinion']
+    return Ng
 
-def tau_dcmotor(): #Returns the motor shaft torque when given motor shaft speed and a dictionary containing
+def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor shaft speed and a dictionary containing
                         #important specifications for the motor.
-    
+    if not isinstance(motor, dict): 
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(omega, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if omega > motor['speed_noload']:
+        return 0
+    if omega < 0:
+        return motor['torque_stall']
+
     return            
 def F_drive(): #Returns the force applied to the rover by the drive system given information about the drive
     print('hi3')                #system (wheel_assembly) and the motor shaft speed.
