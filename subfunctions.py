@@ -6,12 +6,14 @@ def get_mass(rover1): # Computes the total mass of the rover. Uses information i
     return mass_tot_wheels + mass_tot_chassis
 
 
-def get_gear_ratio(rover1): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
+def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
     #gear ratio = diam_gear/diam_pinion
-    return rover1['wheel_assembly']['speed_reducer']['diam_gear']/rover1['wheel_assembly']['speed_reducer']['diam_pinion']
+    return diam_gear/diam_pinion
 
 def tau_dcmotor(): #Returns the motor shaft torque when given motor shaft speed and a dictionary containing
-    print('hi2')           #important specifications for the motor.
+                        #important specifications for the motor.
+    
+    return            
 def F_drive(): #Returns the force applied to the rover by the drive system given information about the drive
     print('hi3')                #system (wheel_assembly) and the motor shaft speed.
 def F_gravity(): #Returns the magnitude of the force component acting on the rover in the direction of its
