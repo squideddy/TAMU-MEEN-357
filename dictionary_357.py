@@ -3,7 +3,7 @@ rover = {}
 
 
 speed_reducer = {
-    'type':'reverted','diam_pinion':0.04,'diam_gear':0.07,'mass2':1.5}
+    'type':'reverted','diam_pinion':0.04,'diam_gear':0.07,'mass':1.5}
 
 motor = {
     'torque_stall':170.0 ,'torque_noload':0.0,'speed_noload':3.8,'mass':5.0}
@@ -26,7 +26,7 @@ rover['wheel_assembly'] = {
 
 rover['chassis'] = chassis
 rover['science_payload'] = science_payload
-rover['power_subsys'] = power_subsys\
+rover['power_subsys'] = power_subsys
 
 planet = {}
-planet['gravity'] = 3.71 #m/s^2 for mars
+planet['gravity'] = 3.72 #m/s^2 for mars

@@ -1,9 +1,13 @@
 import numpy as np
 import math as m
+
+
 def get_mass(rover1): # Computes the total mass of the rover. Uses information in the rover dict.
-    mass_tot_wheels = (rover1['wheel_assembly']['wheel']['mass']+rover1['wheel_assembly']['speed_reducer']['mass2']+rover1['wheel_assembly']['motor']['mass'])* 6
+    mass_tot_wheels = (rover1['wheel_assembly']['wheel']['mass'] + rover1['wheel_assembly']['speed_reducer']['mass2']
+                       + rover1['wheel_assembly']['motor']['mass']) * 6
     mass_tot_chassis = rover1['chassis']['mass'] + rover1['science_payload']['mass'] + rover1['power_subsys']['mass']
-    return mass_tot_wheels + mass_tot_chassis
+    m = mass_tot_wheels + mass_tot_chassis
+    return m
 
 
 def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the speed reducer based on speed_reducer dict.
@@ -13,8 +17,9 @@ def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the sp
     if not isinstance(speed_reducer, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     
-    if not isinstance(speed_reducer['type'], str) and speed_reducer['type'].lower() == 'reverted': 
+    if not speed_reducer['type'].lower() == 'reverted': 
         raise   TypeError("Error: Invalid input type. Expected a string with value 'reverted'.")
+    
     # Calculate gear ratio
     Ng = (speed_reducer['diam_gear']/speed_reducer['diam_pinion'])**2
     return Ng
@@ -29,8 +34,9 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
         raise   TypeError("Error: Invalid input type. Expected a number.")
     
     # Calculate torque
-    tau = np.where(omega > motor['speed_noload'], 0, np.where(omega < 0, motor['torque_stall'], omega)
-        )
+    mid_tau = motor['torque_stall'] - (motor['torque_stall'] - motor['torque_noload'])/(motor['speed_noload'])*omega
+    tau = np.where(omega > motor['speed_noload'], 0, np.where(omega < 0, motor['torque_stall'], mid_tau))
+
     return tau
 
 
@@ -49,7 +55,8 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     r_wheel = rover['wheel_assembly']['wheel']['diameter']/2
     
     # equation for F_drive of the whole rover
-    F_d = (tau * Ng) / r_wheel *6
+    F_d = (tau * Ng) / r_wheel * 6
+
     return F_d
     
 
@@ -76,7 +83,6 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
     
     Fgt = np.where(theta <= 0, -Fgt, Fgt)
     
-
     return Fgt 
     
     
