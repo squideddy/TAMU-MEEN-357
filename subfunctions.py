@@ -1,5 +1,5 @@
 import numpy as np
-
+import math as m
 def get_mass(rover1): # Computes the total mass of the rover. Uses information in the rover dict.
     mass_tot_wheels = (rover1['wheel_assembly']['wheel']['mass']+rover1['wheel_assembly']['speed_reducer']['mass2']+rover1['wheel_assembly']['motor']['mass'])* 6
     mass_tot_chassis = rover1['chassis']['mass'] + rover1['science_payload']['mass'] + rover1['power_subsys']['mass']
@@ -49,7 +49,7 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
     r_wheel = rover['wheel_assembly']['wheel']['diameter']/2
     
-    # equation for F_drive
+    # equation for F_drive of the whole rover
     F_d = (tau_dcmotor * Ng) / r_wheel *6
     return F_d
     
@@ -74,15 +74,61 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
 
     # equation for F_gravity x-axis
     Fgt = mass * g * np.sin(theta)
+    if theta < 0:
+        Fgt = -Fgt
     return Fgt 
     
     
 
-def F_rolling(): #Returns the magnitude of the force acting on the rover in the direction of its translational
+def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of the force acting on the rover in the direction of its translational
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
+    # Raise errors
+    if not isinstance(omega, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if not isinstance(terrain_angle, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if not isinstance(len(terrain_angle) == len(omega)):
+        raise ValueError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
+    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75): 
+        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    if not isinstance(rover, dict):
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(planet, dict):    
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(Crr, (int, float) and Crr >= 0): 
+        raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
 
+    # rolling resistance over the whole rover
+    F_normal = get_mass(rover) * planet['gravity'] * np.cos(np.radians(terrain_angle))
+    F_r = Crr * F_normal
+    v_rover = omega * get_gear_ratio(rover) * (rover['wheel_assembly']['wheel']['diameter']/2)
+    Frr = m.erf(40 * v_rover)*F_r
+    return Frr
 
-def F_net(): #Returns the magnitude of net force acting on the rover in the direction of its translational
-    print('hi6')                #motion.
+
+def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of net force acting on the rover in the direction of its translational
+            #motion.
+    # Raise errors
+    if not isinstance(omega, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if not isinstance(terrain_angle, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if not isinstance(len(terrain_angle) == len(omega)):
+        raise ValueError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
+    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75): 
+        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    if not isinstance(rover, dict):
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(planet, dict):    
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(Crr, (int, float) and Crr >= 0): 
+        raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
+    
+    # F Net over the whole rover
+    F_drive = F_drive(omega, rover)
+    F_gravity = F_gravity(terrain_angle, rover, planet)
+    F_rolling = F_rolling(omega, terrain_angle, rover, planet, Crr)
+    F_net = F_drive - F_gravity - F_rolling 
+    return F_net
