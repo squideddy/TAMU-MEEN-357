@@ -14,6 +14,8 @@ import dictionary_357
 import numpy as np
 
 
+# Replace all below with subfunctions
+
 # Generate omega (motor speed) values
 omega = np.linspace(0, dictionary_357.motor['speed_noload'], 100)
 # Calculate torque for each omega
@@ -21,6 +23,8 @@ tau = dictionary_357.motor['torque_stall'] * (1 - omega / dictionary_357.motor['
 tau = np.clip(tau, 0, dictionary_357.motor['torque_stall'])
 # Calculate power for each omega: power = torque * omega
 power = tau * omega
+
+# Replace all above with subfunctions
 
 plt.figure(figsize=(8, 10))
 
