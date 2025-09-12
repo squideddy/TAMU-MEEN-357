@@ -10,24 +10,43 @@ o motor power [W] vs. motor shaft speed [rad/s] (use speed on the x-axis)
 matplotlib.pyplot.xlabel and matplotlib.pyplot.ylabel commands.
 • Use the functions you created to generate the graphs """
 import matplotlib.pyplot as plt
-import subfunctions as sf
+import dictionary_357
+import numpy as np
 
 
+# Replace all below with subfunctions
+
+# Generate omega (motor speed) values
+omega = np.linspace(0, dictionary_357.motor['speed_noload'], 100)
+# Calculate torque for each omega
+tau = dictionary_357.motor['torque_stall'] * (1 - omega / dictionary_357.motor['speed_noload'])
+tau = np.clip(tau, 0, dictionary_357.motor['torque_stall'])
+# Calculate power for each omega: power = torque * omega
+power = tau * omega
+
+# Replace all above with subfunctions
+
+plt.figure(figsize=(8, 10))
+
+
+
+
+# 1. Motor shaft speed vs. torque
 plt.subplot(3,1,1)
-plt.plot(sf.tau_dcmotor(), sf.omega())
+plt.plot(tau, omega)
 plt.xlabel("Motor Shaft Torque [Nm]")
 plt.ylabel("Motor Shaft Speed [rad/s]")
 
+# 2. Motor power vs. torque
 plt.subplot(3,1,2)
-plt.plot(sf.tau_dcmotor(), sf.power())
+plt.plot(tau, power)
 plt.xlabel("Motor Shaft Torque [Nm]")
 plt.ylabel("Motor Power [W]")
 
+# 3. Motor power vs. speed
 plt.subplot(3,1,3)
-plt.plot(sf.omega(), sf.power())
+plt.plot(omega, power)
 plt.xlabel("Motor Shaft Speed [rad/s]")
 plt.ylabel("Motor Power [W]")
 
-
-
-
+plt.tight_layout()
