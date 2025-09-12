@@ -27,11 +27,9 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
         raise   TypeError("Error: Invalid input type. Expected a number.")
     
     # Calculate torque
-    omega = np.asarray(omega)
     tau = np.where(omega > motor['speed_noload'], 0,
-        np.where(omega < 0, motor['torque_stall'] 
-       )
-    )
+        np.where(omega < 0, motor['torque_stall'])
+        )
     return tau
 
 
@@ -127,6 +125,9 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
         raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
     # F Net over the whole rover
+    omega = np.asarray(omega)
+    terrain_angle = np.asarray(terrain_angle)
+
     F_drive = F_drive(omega, rover)
     F_gravity = F_gravity(terrain_angle, rover, planet)
     F_rolling = F_rolling(omega, terrain_angle, rover, planet, Crr)
