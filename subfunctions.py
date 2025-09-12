@@ -28,7 +28,7 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
     
     # Calculate torque
     tau = np.where(omega > motor['speed_noload'], 0,
-        np.where(omega < 0, motor['torque_stall'])
+        np.where(omega < 0, motor['torque_stall'], omega)
         )
     return tau
 
