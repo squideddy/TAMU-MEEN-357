@@ -35,10 +35,11 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
                         #important specifications for the motor.
     
     # Raise errors
+    if not isinstance(np.any(omega), (int, float, np.ndarray)) and len(omega) == 1: 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(motor, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(omega, (int, float)) or len(omega) == 1: 
-        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
+
     
     # Calculate torque
     mid_tau = motor['torque_stall'] - (motor['torque_stall'] - motor['torque_noload'])/(motor['speed_noload'])*omega
@@ -51,7 +52,7 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-    if not isinstance(omega, (int, float)) or len(omega) == 1: 
+    if not isinstance(np.any(omega), (int, float, np.ndarray)) and len(omega) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(rover, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
@@ -59,7 +60,7 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     # pull in variables from rover dict
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
-    r_wheel = rover['wheel_assembly']['wheel']['diameter']/2
+    r_wheel = rover['wheel_assembly']['wheel']['radius']/2
     
     # equation for F_drive of the whole rover
     F_d = (tau * Ng) / r_wheel * 6
@@ -71,9 +72,9 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-    if not isinstance(terrain_angle, (int, float)) or len(terrain_angle) == 1: 
+    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or array of size 1.")
-    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75):
+    if not (np.any(terrain_angle <= 75) and np.any(terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
@@ -98,19 +99,19 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
     # Raise errors
-    if not isinstance(omega, (int, float)) or len(omega) == 1: 
+    if not isinstance(omega, (int, float, np.ndarray)) and len(omega) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not isinstance(terrain_angle, (int, float)) or len(terrain_angle) == 1: 
+    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or number array of size 1.")
     if not (len(terrain_angle) == len(omega)):
         raise TypeError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
-    if not  (terrain_angle <= 75) and terrain_angle >= -75: 
+    if not  (np.any(terrain_angle) <= 75) and np.any(terrain_angle) >= -75: 
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     if not isinstance(planet, dict):    
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float)) and Crr >= 0: 
+    if not isinstance(Crr, (int, float, np.ndarray)) and Crr >= 0: 
         raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
 
@@ -126,19 +127,19 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
 def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of net force acting on the rover in the direction of its translational
             #motion.
     # Raise errors
-    if not isinstance(omega, (int, float)) or len(omega) == 1: 
-        raise   TypeError("Error: Invalid input type. Expected a number or number array of size 1.")
-    if not isinstance(terrain_angle, (int, float)) or len(terrain_angle) == 1: 
+    if not isinstance(omega, (int, float, np.ndarray)) and len(omega) == 1: 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or number array of size 1.")
     if not (len(terrain_angle) == len(omega)):
-        raise ValueError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
-    if not terrain_angle <= 75 and terrain_angle >= -75: 
+        raise TypeError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
+    if not  (np.any(terrain_angle) <= 75) and np.any(terrain_angle) >= -75: 
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     if not isinstance(planet, dict):    
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float)) and Crr >= 0: 
+    if not isinstance(Crr, (int, float, np.ndarray)) and Crr >= 0: 
         raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
     # F Net over the whole rover
