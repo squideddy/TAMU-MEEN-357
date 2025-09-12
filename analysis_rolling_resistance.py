@@ -8,3 +8,4 @@ o Crr_array = numpy.linspace(0.01,0.4,25);
 • Plot v_max versus Crr_array. Make sure to label the axes and indicate their units.
 • Do not display anything to the console
 • The hints for the previous problem apply here as well."""
+

@@ -3,3 +3,4 @@ speed, torque, and power of the speed reducer output shaft (the motor shaft now 
 speed reducer; your graphs should be of the torque, speed, and power of the speed reducer output). As
 in the previous case, please label your axes properly.
 """
+
