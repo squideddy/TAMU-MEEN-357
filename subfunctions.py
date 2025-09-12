@@ -13,6 +13,8 @@ def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the sp
     if not isinstance(speed_reducer, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     
+    if not isinstance(speed_reducer['type'], str and speed_reducer['type'].lower() == 'reverted'): 
+        raise   TypeError("Error: Invalid input type. Expected a string with value 'reverted'.")
     # Calculate gear ratio
     Ng = (speed_reducer['diam_gear']/speed_reducer['diam_pinion'])**2
     return Ng
@@ -27,8 +29,7 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
         raise   TypeError("Error: Invalid input type. Expected a number.")
     
     # Calculate torque
-    tau = np.where(omega > motor['speed_noload'], 0,
-        np.where(omega < 0, motor['torque_stall'], omega)
+    tau = np.where(omega > motor['speed_noload'], 0, np.where(omega < 0, motor['torque_stall'], omega)
         )
     return tau
 
