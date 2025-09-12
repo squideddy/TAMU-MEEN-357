@@ -13,7 +13,7 @@ def get_gear_ratio(speed_reducer): #Returns the speed reduction ratio for the sp
     if not isinstance(speed_reducer, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     
-    if not isinstance(speed_reducer['type'], str and speed_reducer['type'].lower() == 'reverted'): 
+    if not isinstance(speed_reducer['type'], str) and speed_reducer['type'].lower() == 'reverted': 
         raise   TypeError("Error: Invalid input type. Expected a string with value 'reverted'.")
     # Calculate gear ratio
     Ng = (speed_reducer['diam_gear']/speed_reducer['diam_pinion'])**2
@@ -57,7 +57,7 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-    if not isinstance(terrain_angle, (int, float,np.ndarray)): 
+    if not isinstance(terrain_angle, (int, float, np.ndarray)): 
         raise   TypeError("Error: Invalid input type. Expected a number.")
     if not isinstance (terrain_angle <= 75 and terrain_angle >= -75):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
@@ -83,19 +83,19 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
     # Raise errors
-    if not isinstance(omega, (int, float,np.ndarray)): 
+    if not isinstance(omega, (int, float, np.ndarray)): 
         raise   TypeError("Error: Invalid input type. Expected a number.")
-    if not isinstance(terrain_angle, (int, float,np.ndarray)): 
+    if not isinstance(terrain_angle, (int, float, np.ndarray)): 
         raise   TypeError("Error: Invalid input type. Expected a number.")
     if not isinstance(len(terrain_angle) == len(omega)):
         raise ValueError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
-    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75): 
+    if not  (terrain_angle <= 75) and terrain_angle >= -75: 
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     if not isinstance(planet, dict):    
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float) and Crr >= 0): 
+    if not isinstance(Crr, (int, float)) and Crr >= 0: 
         raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
 
@@ -116,13 +116,13 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
         raise   TypeError("Error: Invalid input type. Expected a number.")
     if not isinstance(len(terrain_angle) == len(omega)):
         raise ValueError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
-    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75): 
+    if not terrain_angle <= 75 and terrain_angle >= -75: 
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
     if not isinstance(planet, dict):    
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float) and Crr >= 0): 
+    if not isinstance(Crr, (int, float)) and Crr >= 0: 
         raise   TypeError("Error: Invalid input type. Expected a number or positive value.")
     
     # F Net over the whole rover
