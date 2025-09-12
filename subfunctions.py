@@ -74,14 +74,16 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
 
     # equation for F_gravity x-axis
     Fgt = mass * g * np.sin(theta)
+    if theta < 0:
+        Fgt = -Fgt
     return Fgt 
     
     
 
-def F_rolling(): #Returns the magnitude of the force acting on the rover in the direction of its translational
+def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of the force acting on the rover in the direction of its translational
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
-    
+
 
 
 def F_net(): #Returns the magnitude of net force acting on the rover in the direction of its translational
