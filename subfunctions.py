@@ -54,17 +54,35 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     return F_d
     
 
-def F_gravity(): #Returns the magnitude of the force component acting on the rover in the direction of its
+def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force component acting on the rover in the direction of its
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
+    # Raise errors
+    if not isinstance(terrain_angle, (int, float)): 
+        raise   TypeError("Error: Invalid input type. Expected a number.")
+    if not isinstance (terrain_angle <= 75 and terrain_angle >= -75):
+        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    if not isinstance(rover, dict):
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(planet, dict):
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+    
+    # pull in variables from rover and planet dicts
+    mass = get_mass(rover)
+    g = planet['gravity']
+    theta = np.radians(terrain_angle)
 
+    # equation for F_gravity x-axis
+    Fgt = mass * g * np.sin(theta)
+    return Fgt 
     
     
-
-
 
 def F_rolling(): #Returns the magnitude of the force acting on the rover in the direction of its translational
-    print('hi5')                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
+               #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
+    
+
+
 def F_net(): #Returns the magnitude of net force acting on the rover in the direction of its translational
     print('hi6')                #motion.

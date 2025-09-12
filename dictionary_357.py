@@ -26,4 +26,7 @@ rover['wheel_assembly'] = {
 
 rover['chassis'] = chassis
 rover['science_payload'] = science_payload
-rover['power_subsys'] = power_subsys
+rover['power_subsys'] = power_subsys\
+
+planet = {}
+planet['gravity'] = 3.71 #m/s^2 for mars
