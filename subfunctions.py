@@ -127,6 +127,8 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
 def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of net force acting on the rover in the direction of its translational
             #motion.
     # Raise errors
+    # 1. You’re using np.any(...) inside isinstance(...). np.any(terrain_angle) returns a bool, so the isinstance check is meaningless and often fails.
+    # 2. You require len(...) == 1, which crashes for scalars (they don’t have len) and blocks scalar–array use.
     if not isinstance(omega, (int, float, np.ndarray)) and len(omega) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
