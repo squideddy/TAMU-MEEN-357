@@ -40,7 +40,7 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
         if omega.ndim != 1:
             raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
     elif not isinstance(omega, (int, float)):
-        raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+        raise TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(motor, dict):
         raise Exception("Error: Invalid input type. Expected a dictionary.")
 
@@ -176,6 +176,6 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     F_drive_u = F_drive(omega, rover)
     F_gravity_u = F_gravity(terrain_angle, rover, planet)
     F_rolling_u = F_rolling(omega, terrain_angle, rover, planet, Crr)
-    F_net_u = F_drive - F_gravity - F_rolling 
+    F_net = F_drive - F_gravity - F_rolling 
 
-    return F_net_u
+    return F_net
