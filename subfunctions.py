@@ -154,9 +154,9 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     omega = np.asarray(omega)
     terrain_angle = np.asarray(terrain_angle)
 
-    F_drive = F_drive(omega, rover)
-    F_gravity = F_gravity(terrain_angle, rover, planet)
-    F_rolling = F_rolling(omega, terrain_angle, rover, planet, Crr)
-    F_net = F_drive - F_gravity - F_rolling 
+    F_drive_u = F_drive(omega, rover)
+    F_gravity_u = F_gravity(terrain_angle, rover, planet)
+    F_rolling_u = F_rolling(omega, terrain_angle, rover, planet, Crr)
+    F_net_u = F_drive - F_gravity - F_rolling 
 
-    return F_net
+    return F_net_u
