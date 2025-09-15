@@ -55,7 +55,7 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-    if not np.any(isinstance(omega), (int, float, np.ndarray)): 
+    if not np.any(isinstance(omega, (int, float, np.ndarray))): 
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
     
     if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
