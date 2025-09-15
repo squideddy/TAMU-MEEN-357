@@ -27,8 +27,8 @@ from subfunctions import F_net as F_net_array  # your array-oriented function
 # Pull config (with safe fallbacks for planet, Crr)
 rover  = getattr(cfg, 'rover',  None)
 motor  = getattr(cfg, 'motor',  None)
-planet = getattr(cfg, 'planet', {'gravity': 3.72})
-Crr    = getattr(cfg, 'Crr',    0.2)
+planet = 3.72
+Crr    = 0.2
 
 if rover is None or motor is None:
     raise RuntimeError("dictionary_357.py must define 'rover' and 'motor'.")
