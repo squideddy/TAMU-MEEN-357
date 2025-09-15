@@ -56,18 +56,18 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-    if isinstance(omega, np.ndarray):
-        if len(omega.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    elif not np.all(isinstance(omega, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
+    if not isinstance(omega, (int, float, np.ndarray)) or len(omega) == 1: 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
+
     if not isinstance(rover, dict): 
-        raise  TypeError("Error: Invalid input type. Expected a dictionary.")
+        raise   TypeError("Error: Invalid input type. Expected a dictionary.")
+
+
 
     # pull in variables from rover dict
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
-    r_wheel = rover['wheel_assembly']['wheel']['radius']/2
+    r_wheel = rover['wheel_assembly']['wheel']['radius']
     
     # equation for F_drive of the whole rover
     F_d = (tau * Ng) / r_wheel * 6
