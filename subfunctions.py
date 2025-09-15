@@ -36,12 +36,13 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
                         #important specifications for the motor.
     
     # Raise errors
-    if not np.any(isinstance(omega, (int, float, np.ndarray))): 
-        raise   Exception("Error: Invalid input type. Expected a number or numpy array for omega.")
-    if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
-        raise   Exception("Error: Invalid input type. Expected a 1D numpy array.")
-    if not isinstance(motor, dict): 
-        raise  TypeError("Error: Invalid input type. Expected a dictionary.")
+    if isinstance(omega, np.ndarray):
+        if omega.ndim != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not isinstance(omega, (int, float)):
+        raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    if not isinstance(motor, dict):
+        raise Exception("Error: Invalid input type. Expected a dictionary.")
 
     
     # Calculate torque
@@ -55,11 +56,11 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-    if not np.any(isinstance(omega), (int, float, np.ndarray)): 
-        raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    
-    if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
-        raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    if isinstance(omega, np.ndarray):
+        if len(omega.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.all(isinstance(omega, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
     if not isinstance(rover, dict): 
         raise  TypeError("Error: Invalid input type. Expected a dictionary.")
 
@@ -78,8 +79,12 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-    if not np.any(isinstance(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle.shape) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or array of size 1.")
+    if isinstance(terrain_angle, np.ndarray):
+        if len(terrain_angle.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.all(isinstance(terrain_angle, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
+    
     if not (np.any(terrain_angle <= 75) and np.any(terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
@@ -105,10 +110,16 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
     # Raise errors
-    if not isinstance(omega, (int, float, np.ndarray)) and len(omega.shape) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or number array of size 1.")
+    if isinstance(omega, np.ndarray):
+        if len(omega.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.any(isinstance(omega, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
+    if isinstance(terrain_angle, np.ndarray):
+        if len(terrain_angle.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.all(isinstance(terrain_angle, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
     if not (len(terrain_angle) == len(omega)):
         raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
     if not  (np.any(terrain_angle) <= 75) and np.any(terrain_angle) >= -75: 
@@ -135,13 +146,21 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     # Raise errors
     # 1. You’re using np.any(...) inside isinstance(...). np.any(terrain_angle) returns a bool, so the isinstance check is meaningless and often fails.
     # 2. You require len(...) == 1, which crashes for scalars (they don’t have len) and blocks scalar–array use.
-    if not np.any(isinstance(omega, (int, float, np.ndarray))) and len(omega.shape) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle.shape) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or number array of size 1.")
-    if not (len(terrain_angle) == len(omega)):
+    if isinstance(omega, np.ndarray):
+        if len(omega.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.all(isinstance(omega, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
+   
+    if isinstance(terrain_angle, np.ndarray):
+        if len(terrain_angle.shape) != 1:
+            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    elif not np.all(isinstance(terrain_angle, (int, float))):
+        raise Exception("Error: Invalid input type. Expected a number or float.")
+    
+    if not np.all(len(terrain_angle) == len(omega)):
         raise   Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
-    if not  all((terrain_angle <= 75) and (terrain_angle >= -75)): 
+    if not np.all((terrain_angle <= 75) & (terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
         raise  Exception("Error: Invalid input type. Expected a dictionary.")
