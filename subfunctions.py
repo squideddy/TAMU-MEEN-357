@@ -35,9 +35,8 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
                         #important specifications for the motor.
     
     # Raise errors
-    if not isinstance(np.any(omega), (int, float, np.ndarray)): 
-        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    
+    if not isinstance(np.all(omega), (int, float, np.ndarray)): 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array. total size 1.")
     if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(motor, dict): 
