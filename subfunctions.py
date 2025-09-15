@@ -107,7 +107,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
     # Raise errors
     if not isinstance(omega, (int, float, np.ndarray)) and len(omega.shape) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not np.any(isinstance(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
+    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or number array of size 1.")
     if not (len(terrain_angle) == len(omega)):
         raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
@@ -137,7 +137,7 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     # 2. You require len(...) == 1, which crashes for scalars (they don’t have len) and blocks scalar–array use.
     if not np.any(isinstance(omega, (int, float, np.ndarray))) and len(omega.shape) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not np.any(isinstance(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle.shape) == 1: 
+    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle.shape) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or number array of size 1.")
     if not (len(terrain_angle) == len(omega)):
         raise   Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
