@@ -35,7 +35,9 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
                         #important specifications for the motor.
     
     # Raise errors
-    if not isinstance(np.any(omega), (int, float, np.ndarray)) and len(omega) == 1: 
+    if not isinstance(np.all(omega), (int, float, np.ndarray)): 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array. total size 1.")
+    if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(motor, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
@@ -52,7 +54,10 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-    if not isinstance(np.any(omega), (int, float, np.ndarray)) and len(omega) == 1: 
+    if not isinstance(np.any(omega), (int, float, np.ndarray)): 
+        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
+    
+    if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(rover, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
@@ -72,7 +77,7 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
+    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle.shape) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or array of size 1.")
     if not (np.any(terrain_angle <= 75) and np.any(terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
@@ -99,7 +104,7 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
     # Raise errors
-    if not isinstance(omega, (int, float, np.ndarray)) and len(omega) == 1: 
+    if not isinstance(omega, (int, float, np.ndarray)) and len(omega.shape) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or number array of size 1.")
@@ -129,9 +134,9 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     # Raise errors
     # 1. You’re using np.any(...) inside isinstance(...). np.any(terrain_angle) returns a bool, so the isinstance check is meaningless and often fails.
     # 2. You require len(...) == 1, which crashes for scalars (they don’t have len) and blocks scalar–array use.
-    if not isinstance(omega, (int, float, np.ndarray)) and len(omega) == 1: 
+    if not isinstance(omega, (int, float, np.ndarray)) and len(omega.shape) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle) == 1: 
+    if not isinstance(np.any(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle.shape) == 1: 
         raise   TypeError("Error: Invalid input type. Expected a number or number array of size 1.")
     if not (len(terrain_angle) == len(omega)):
         raise TypeError("Error: Invalid input value. Expected omega and terrain_angle to be the same length.")
