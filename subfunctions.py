@@ -78,7 +78,7 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-    if not np.any(isinstance(terrain_angle), (int, float, np.ndarray)) and len(terrain_angle.shape) == 1: 
+    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle.shape) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or array of size 1.")
     if not (np.any(terrain_angle <= 75) and np.any(terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
