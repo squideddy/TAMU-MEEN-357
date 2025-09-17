@@ -127,41 +127,43 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
 def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of the force acting on the rover in the direction of its translational
                #motion due to rolling resistances given the terrain inclination angle, rover properties, and a
                 #rolling resistance coefficient.
-    # Raise errors
-    if isinstance(omega, np.ndarray):
-        if len(omega.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    elif not np.all(isinstance(omega, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
-   
-    if isinstance(terrain_angle, np.ndarray):
-        if len(terrain_angle.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-        elif len(terrain_angle) != len(omega):
-            raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
-    elif not np.all(isinstance(terrain_angle, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
-    if not np.all((terrain_angle <= 75) & (terrain_angle >= -75)):
-        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    try:
+        from scipy.special import erf as erf_vec
+    except Exception:
+        import math as m
+        erf_vec = np.vectorize(m.erf, otypes=[float])
+   # --- normalize inputs ---
+    om = np.asarray(omega)
+    th = np.asarray(terrain_angle)
+
+    # --- shape/type validation ---
+    if om.ndim > 1 or th.ndim > 1:
+        raise Exception("Error: Invalid input type. Expected omega and terrain_angle to be scalars or 1-D vectors.")
+    # same length or one scalar
+    if om.size != 1 and th.size != 1 and om.size != th.size:
+        raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same length or one scalar.")
+    # angle range
+    if not np.all((-75.0 <= th) & (th <= 75.0)):
+        raise Exception("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    # dicts
     if not isinstance(rover, dict):
-        raise  Exception("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(planet, dict):    
-        raise  Exception("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float, np.ndarray)) and Crr >= 0: 
-        raise  Exception("Error: Invalid input type. Expected a number or positive value.")
-    
-    print(omega, terrain_angle, rover, planet, Crr, type(omega), type(terrain_angle), type(rover), type(planet), type(Crr))
-    
-    
+        raise Exception("Error: Invalid input type. Expected a dictionary.")
+    if not isinstance(planet, dict):
+        raise Exception("Error: Invalid input type. Expected a dictionary.")
+ 
+
     # rolling resistance over the whole rover
-    F_normal = get_mass(rover) * planet['g'] * np.cos(np.radians(terrain_angle))
+    F_normal = get_mass(rover) * planet['g'] * np.cos(np.radians(th))
     F_r = Crr * F_normal
-    v_rover = (omega * get_gear_ratio(rover) * (rover['wheel_assembly']['wheel']['diameter']/2))
-    Frr = m.erf(40 * v_rover) * F_r
-
-    return Frr
-
-############################################################################################################
+    sr = rover['wheel_assembly']['speed_reducer']
+    v_rover = (om / get_gear_ratio(sr)) * (rover['wheel_assembly']['wheel']['radius'])
+    Frr = -erf_vec(40 * v_rover)*F_r
+    
+    # scalar in -> scalar out
+    if om.ndim == 0 and th.ndim == 0:
+        return float(np.asarray(Frr).reshape(()))
+    return Frr.astype(float)
+#############################################################################################
 def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of net force acting on the rover in the direction of its translational
             #motion.
     # Raise errors

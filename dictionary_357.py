@@ -28,4 +28,4 @@ rover['chassis'] = chassis
 rover['science_payload'] = science_payload
 rover['power_subsys'] = power_subsys
 
-planet = {"gravity": 3.72}
+planet = {"g": 3.72}
