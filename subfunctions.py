@@ -78,41 +78,50 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     
 ############################################################################################################
 def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force component acting on the rover in the direction of its
-                    #translational motion due to gravity as a function of terrain inclination angle and rover
-                    #properties.
-    # Raise errors
-    if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle.shape) == 1: 
-        raise  Exception("Error: Invalid input type. Expected a number or array of size 1.")
-<<<<<<< HEAD
-    if not (np.any(terrain_angle <= 75) and np.any(terrain_angle >= -75)):
-=======
-
-    if isinstance(terrain_angle, np.ndarray):
-        if len(terrain_angle.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    elif not np.all(isinstance(terrain_angle, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
-    
-    if not (np.all(terrain_angle <= 75) and np.all(terrain_angle >= -75)):
->>>>>>> e3144256dcab57abdbcb74fa8bdd0f1cde52ef26
-        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
+    """
+    Force component along the direction of motion due to gravity.
+    Positive terrain_angle (uphill) should yield NEGATIVE force.
+    Inputs:
+      - terrain_angle: scalar (deg) or 1-D vector (deg)
+      - rover: dict (must be a dictionary)
+      - planet: dict with gravity in m/s^2 (key 'gravity' or 'g')
+    """
+    # --- validate rover & planet dicts ---
     if not isinstance(rover, dict):
-        raise  TypeError("Error: Invalid input type. Expected a dictionary.")
+        raise Exception("Error: Invalid input type. Expected rover to be a dictionary.")
     if not isinstance(planet, dict):
-        raise  TypeError("Error: Invalid input type. Expected a dictionary.")
+        raise Exception("Error: Invalid input type. Expected planet to be a dictionary.")
 
-    # pull in variables from rover and planet dicts
-    mass = get_mass(rover)
-    g = planet['g']
-    theta = np.radians(terrain_angle)
+    # --- get gravity (m/s^2) ---
+    if 'gravity' in planet:
+        g = planet['gravity']
+    elif 'g' in planet:
+        g = planet['g']
+    else:
+        raise Exception("Error: planet dictionary must include 'gravity' (m/s^2).")
 
-    # equation for F_gravity x-axis
-    Fgt = mass * g * np.sin(theta)
-    
-    Fgt = np.where(theta < 0, Fgt, -Fgt)
-    
-    return Fgt 
-    
+    # --- normalize angle to numpy array, allow scalar or 1-D vector ---
+    theta_arr = np.asarray(terrain_angle)
+    if theta_arr.ndim > 1:
+        raise Exception("Error: Invalid input type. Expected terrain_angle to be a scalar or 1-D vector.")
+
+    # --- range check in degrees ---
+    if theta_arr.ndim == 0:
+        theta_deg = float(theta_arr)
+        if not (-75.0 <= theta_deg <= 75.0):
+            raise Exception("Error: Invalid input value. terrain_angle must be between -75 and 75 degrees.")
+        # physics (units: N)
+        m_rover = get_mass(rover)                 # MUST call get_mass
+        theta_rad = np.deg2rad(theta_deg)
+        # sign convention: uphill (+θ) => negative force
+        return float(- m_rover * g * np.sin(theta_rad))
+    else:
+        # 1-D vector
+        if not np.all((-75.0 <= theta_arr) & (theta_arr <= 75.0)):
+            raise Exception("Error: Invalid input value. All terrain_angle elements must be between -75 and 75 degrees.")
+        m_rover = get_mass(rover)
+        theta_rad = np.deg2rad(theta_arr.astype(float))
+        return - m_rover * g * np.sin(theta_rad)
     
 ############################################################################################################
 def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of the force acting on the rover in the direction of its translational
