@@ -56,17 +56,11 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
                         #system (wheel_assembly) and the motor shaft speed.
     
     # raise errors
-<<<<<<< HEAD
     if not np.any(isinstance(omega, (int, float, np.ndarray))): 
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
     
     if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-=======
-    if not isinstance(omega, (int, float, np.ndarray)) or len(omega) == 1: 
-        raise   TypeError("Error: Invalid input type. Expected a number or numpy array of size 1.")
-
->>>>>>> 7db22e8e942f2e35a9f764b3fd7e11f5b6cb6353
     if not isinstance(rover, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
 
@@ -87,10 +81,9 @@ def F_gravity(terrain_angle, rover, planet): #Returns the magnitude of the force
                     #translational motion due to gravity as a function of terrain inclination angle and rover
                     #properties.
     # Raise errors
-<<<<<<< HEAD
     if not np.any(isinstance(terrain_angle, (int, float, np.ndarray))) and len(terrain_angle.shape) == 1: 
         raise  Exception("Error: Invalid input type. Expected a number or array of size 1.")
-=======
+
     if isinstance(terrain_angle, np.ndarray):
         if len(terrain_angle.shape) != 1:
             raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
