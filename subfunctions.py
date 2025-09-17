@@ -137,11 +137,10 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
     if isinstance(terrain_angle, np.ndarray):
         if len(terrain_angle.shape) != 1:
             raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
+        elif len(terrain_angle) != len(omega):
+            raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
     elif not np.all(isinstance(terrain_angle, (int, float))):
         raise Exception("Error: Invalid input type. Expected a number or float.")
-    
-    if not terrain_angle.shape == omega.shape:
-        raise   Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
     if not np.all((terrain_angle <= 75) & (terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
@@ -151,11 +150,14 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
     if not isinstance(Crr, (int, float, np.ndarray)) and Crr >= 0: 
         raise  Exception("Error: Invalid input type. Expected a number or positive value.")
     
+    print(omega, terrain_angle, rover, planet, Crr, type(omega), type(terrain_angle), type(rover), type(planet), type(Crr))
+    
+    
     # rolling resistance over the whole rover
     F_normal = get_mass(rover) * planet['g'] * np.cos(np.radians(terrain_angle))
     F_r = Crr * F_normal
-    v_rover = omega * get_gear_ratio(rover) * (rover['wheel_assembly']['wheel']['diameter']/2)
-    Frr = m.erf(40 * v_rover)*F_r
+    v_rover = (omega * get_gear_ratio(rover) * (rover['wheel_assembly']['wheel']['diameter']/2))
+    Frr = m.erf(40 * v_rover) * F_r
 
     return Frr
 
@@ -177,10 +179,6 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
             raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
     elif not np.all(isinstance(terrain_angle, (int, float))):
         raise Exception("Error: Invalid input type. Expected a number or float.")
-    """
-    if not (terrain_angle.shape == omega.shape):
-        raise   Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
-        """
     if not np.all((terrain_angle <= 75) & (terrain_angle >= -75)):
         raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
     if not isinstance(rover, dict):
@@ -194,6 +192,6 @@ def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of n
     F_drive_u = F_drive(omega, rover)
     F_g_u = F_gravity(terrain_angle, rover, planet)
     F_rolling_u = F_rolling(omega, terrain_angle, rover, planet, Crr)
-    F_net = F_drive_u - F_g_u - F_rolling_u
+    F_net = F_drive_u + F_g_u + F_rolling_u
 
     return F_net
