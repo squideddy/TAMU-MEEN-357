@@ -25,7 +25,6 @@ omegq_motor = Velocity / r_wheel * Ng
 
 T_motor = cfg.motor['torque_stall'] - ((cfg.motor['torque_stall'] ...
         - cfg.motor['torque_noload'])/ cfg.motor['speed_noload']) * omega_motor
-accel_0 = 
 
 
 
