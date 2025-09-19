@@ -43,3 +43,27 @@ your script.
 will control the 3D view
 • ax.plot_surface(CRR, SLOPE, VMAX)
 As with the other analysis scripts: Do not display anything to the console."""
+import numpy as np
+import matplotlib.pyplot as plt
+import subfunctions as sf
+import dictionary_357 as cfg
+import scipy.optimize as opt
+from scipy.special import erf
+
+
+
+Crr_array = np.linspace(0.01,0.4,25)
+slope_array_deg = np.linspace(-10,35,25)
+
+
+CRR, SLOPE = np.meshgrid(Crr_array, slope_array_deg)
+VMAX = np.zeros(np.shape(CRR), dtype = float)
+
+
+N = np.shape(CRR)[0]
+for i in range(N):
+    for j in range(N):
+        Crr_sample = float(CRR[i,j])
+        slope_sample = float(SLOPES[i,j])
+        VMAX[i,j] = ... # here you put code to find the max speed at Crr_sample and
+# slope_sample
