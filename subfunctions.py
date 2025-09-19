@@ -164,36 +164,40 @@ def F_rolling(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude 
         return float(np.asarray(Frr).reshape(()))
     return Frr.astype(float)
 #############################################################################################
-def F_net(omega, terrain_angle, rover, planet, Crr): #Returns the magnitude of net force acting on the rover in the direction of its translational
-            #motion.
-    # Raise errors
-    
-    if isinstance(omega, np.ndarray):
-        if len(omega.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-    elif not np.all(isinstance(omega, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
-   
-    if isinstance(terrain_angle, np.ndarray):
-        if len(terrain_angle.shape) != 1:
-            raise Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
-        elif len(terrain_angle) != len(omega):
-            raise Exception("Error: Invalid input value. Expected omega and terrain_angle to be the same size.")
-    elif not np.all(isinstance(terrain_angle, (int, float))):
-        raise Exception("Error: Invalid input type. Expected a number or float.")
-    if not np.all((terrain_angle <= 75) & (terrain_angle >= -75)):
-        raise ValueError("Error: Invalid input value. Expected a number between -75 and 75 degrees.")
-    if not isinstance(rover, dict):
-        raise  Exception("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(planet, dict):    
-        raise  Exception("Error: Invalid input type. Expected a dictionary.")
-    if not isinstance(Crr, (int, float, np.ndarray)) and Crr >= 0: 
-        raise  Exception("Error: Invalid input type. Expected a number or positive value.")
-    
-    # F Net over the whole rover
-    F_drive_u = F_drive(omega, rover)
-    F_g_u = F_gravity(terrain_angle, rover, planet)
-    F_rolling_u = F_rolling(omega, terrain_angle, rover, planet, Crr)
-    F_net = F_drive_u + F_g_u + F_rolling_u
+def F_net(omega, terrain_angle, rover, planet, Crr):
+    """
+    Compute net force acting on rover in direction of motion.
+    """
 
-    return F_net
+    # --- validate inputs ---
+    om = np.asarray(omega)
+    th = np.asarray(terrain_angle)
+
+    # must be scalar or 1-D vector
+    if om.ndim > 1 or th.ndim > 1:
+        raise Exception("Error: omega and terrain_angle must be scalars or 1-D vectors.")
+
+    # sizes must match (or one scalar)
+    if om.size != 1 and th.size != 1 and om.size != th.size:
+        raise Exception("Error: omega and terrain_angle must be the same length or one scalar.")
+
+    # terrain angle check
+    if not np.all((-75.0 <= th) & (th <= 75.0)):
+        raise Exception("Error: terrain_angle values must be between -75 and 75 degrees.")
+
+    # dict checks
+    if not isinstance(rover, dict):
+        raise Exception("Error: rover must be a dictionary.")
+    if not isinstance(planet, dict):
+        raise Exception("Error: planet must be a dictionary.")
+
+    # Crr check
+    if not isinstance(Crr, (int, float)) or Crr <= 0:
+        raise Exception("Error: Crr must be a positive scalar.")
+
+    # --- compute forces ---
+    F_drive_u   = F_drive(om, rover)
+    F_g_u       = F_gravity(th, rover, planet)
+    F_rolling_u = F_rolling(om, th, rover, planet, Crr)
+
+    return F_drive_u + F_g_u + F_rolling_u
