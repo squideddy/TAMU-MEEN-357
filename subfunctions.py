@@ -64,8 +64,6 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     if not isinstance(rover, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
 
-
-
     # pull in variables from rover dict
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
     Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
