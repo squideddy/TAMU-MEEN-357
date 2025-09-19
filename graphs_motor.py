@@ -12,24 +12,17 @@ matplotlib.pyplot.xlabel and matplotlib.pyplot.ylabel commands.
 import matplotlib.pyplot as plt
 import dictionary_357
 import numpy as np
+import subfunctions
 
 
-# Replace all below with subfunctions
-
-# Generate omega (motor speed) values
+# Generate omega (motor speed) values using subfunctions
 omega = np.linspace(0, dictionary_357.motor['speed_noload'], 100)
-# Calculate torque for each omega
-tau = dictionary_357.motor['torque_stall'] * (1 - omega / dictionary_357.motor['speed_noload'])
-tau = np.clip(tau, 0, dictionary_357.motor['torque_stall'])
-# Calculate power for each omega: power = torque * omega
+# Calculate torque using subfunctions
+tau = subfunctions.tau_dcmotor(omega, dictionary_357.motor)
+# Calculate power: power = torque * omega
 power = tau * omega
 
-# Replace all above with subfunctions
-
 plt.figure(figsize=(8, 10))
-
-
-
 
 # 1. Motor shaft speed vs. torque
 plt.subplot(3,1,1)
@@ -49,4 +42,7 @@ plt.plot(omega, power)
 plt.xlabel("Motor Shaft Speed [rad/s]")
 plt.ylabel("Motor Power [W]")
 
-plt.tight_layout()
+# Show the plots
+plt.tight_layout()  # Adjusts spacing between subplots
+plt.show()
+
