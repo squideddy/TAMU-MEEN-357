@@ -12,24 +12,97 @@ import numpy as np
 import matplotlib.pyplot as plt
 import subfunctions as sf
 import dictionary_357 as cfg
+import scipy.optimize as opt
+from scipy.special import erf
+
+
+def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
+    # INitializaiton
+
+    # actual number of iterations
+    numIter = 0
+
+    done = False
+
+    err_est = np.nan
+    root = np.nan
+    range = xu - x1
+
+
+    if fun(xu) == 0:
+            root = xu
+            done = True
+            err_est = 0
+    
+    elif fun(x1) == 0:
+            root = x1
+            done = True
+            err_est = 0
+
+    # create a bisector
+    while not done:
+        numIter += 1
+
+        # find the bisector
+        average = (x1 + xu) / 2
+
+        # evaluate the function at the bisector
+        if fun(average) * fun(x1) < 0:
+            xu = average
+            if err_est < err_max or numIter == iter_max:
+                done = True
+                err_est = range / (2 ** numIter)
+                root = average
+
+        else:
+            x1 = average
+            if err_est < err_max or numIter == iter_max:
+                done = True
+                err_est = range / (2 ** numIter)
+                root = average
+    return root
 
 Crr_array = np.linspace(0.01, 0.4, 25)
-theta_0 = np.zeros(size=Crr_array.shape, dtype=float)
-
-Ng = sf.get_gear_ratio(cfg.rover)
+theta_0 = np.zeros(Crr_array.shape, dtype=float)
+rover1 = cfg.rover
+planet = cfg.planet
+Ng = sf.get_gear_ratio(rover1['wheel_assembly']['speed_reducer'])
 r_wheel = cfg.rover['wheel_assembly']['wheel']['radius']
 F_normal = sf.get_mass(cfg.rover) * cfg.planet['g'] * np.cos(np.radians(theta_0))
 
-omegq_motor = Velocity / r_wheel * Ng
+V_max = np.zeros(Crr_array.shape)
+
+for n, Crr in enumerate(Crr_array):
+    F_norm_n = float(F_normal[n])
+    r = r_wheel
+
+    def f(Vv):
+        # Vv: rover linear speed (m/s)
+        omega = Vv / r * Ng          # motor shaft speed
+        tau = sf.tau_dcmotor(omega, cfg.motor)        # motor torque (N·m)
+        F_wheel = tau * Ng / r * 6.0 # total drive force (N)
+        F_rr = - erf(40.0 * Vv) * Crr * F_norm_n  # rolling resistance (N)
+        return F_wheel + F_rr
 
 
-T_motor = cfg.motor['torque_stall'] - ((cfg.motor['torque_stall'] ...
-        - cfg.motor['torque_noload'])/ cfg.motor['speed_noload']) * omega_motor
+
+    try:
+        V_min = 0 
+        V_maximum = 100
+        V_max[n] = basic_bisection(f, V_min , V_maximum, err_max =1e-6, iter_max = 1000)
+
+    except Exception:
+        Vroot = np.nan
 
 
+
+"find each V_max for each Crr value"
+"then plot V_max vs Crr"
+print(V_max)
+print(Crr_array)
 
 plt.plot(Crr_array, V_max)
 plt.xlabel('Coefficient of Rolling Resistance (Crr)')
 plt.ylabel('Maximum Velocity (m/s)')
 plt.title('Rover Maximum Velocity vs Coefficient of Rolling Resistance')
-
+plt.show()
