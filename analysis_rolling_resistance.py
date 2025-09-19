@@ -15,8 +15,6 @@ import dictionary_357 as cfg
 import scipy.optimize as opt
 from scipy.special import erf
 
-Crr_array = np.linspace(0.01, 0.4, 25)
-
 def ARR(Crr_array, theta_0, rover1, planet):
     Ng = sf.get_gear_ratio(rover1['wheel_assembly']['speed_reducer'])
     r_wheel = cfg.rover['wheel_assembly']['wheel']['radius']
@@ -31,10 +29,10 @@ def ARR(Crr_array, theta_0, rover1, planet):
         def f(Vv):
             # Vv: rover linear speed (m/s)
             omega = Vv / r * Ng          # motor shaft speed
-            tau = sf.tau_dcmotor(omega, cfg.motor)        # motor torque (N·m)
-            F_wheel = tau * Ng / r * 6.0 # total drive force (N)
-            F_rr = - erf(40.0 * Vv) * Crr * F_norm_n  # rolling resistance (N)
-            return F_wheel + F_rr
+            
+            Fnet = sf.F_net(np.array([omega]), np.array([theta_0[n]]), rover1, planet, Crr)
+            return (Fnet)
+            
 
         try:
             V_min = 0 # minimum speed to search
@@ -49,14 +47,13 @@ if __name__ == "__main__":
     Crr_array = np.linspace(0.01, 0.4, 25)
     theta_0 = np.zeros(Crr_array.shape, dtype=float)
     V_max = ARR(Crr_array, theta_0, cfg.rover, cfg.planet)
+    plt.plot(Crr_array, V_max)
+    plt.xlabel('Coefficient of Rolling Resistance (Crr)')
+    plt.ylabel('Maximum Velocity (m/s)')
+    plt.title('Rover Maximum Velocity vs Coefficient of Rolling Resistance')
+    plt.show()
+
 
 "find each V_max for each Crr value"
 "then plot V_max vs Crr"
-print(V_max)
-print(Crr_array)
 
-plt.plot(Crr_array, V_max)
-plt.xlabel('Coefficient of Rolling Resistance (Crr)')
-plt.ylabel('Maximum Velocity (m/s)')
-plt.title('Rover Maximum Velocity vs Coefficient of Rolling Resistance')
-plt.show()

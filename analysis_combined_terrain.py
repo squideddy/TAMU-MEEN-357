@@ -49,7 +49,7 @@ import subfunctions as sf
 import dictionary_357 as cfg
 import scipy.optimize as opt
 from scipy.special import erf
-
+import analysis_rolling_resistance as arr
 
 
 Crr_array = np.linspace(0.01,0.4,25)
@@ -63,7 +63,9 @@ VMAX = np.zeros(np.shape(CRR), dtype = float)
 N = np.shape(CRR)[0]
 for i in range(N):
     for j in range(N):
-        Crr_sample = float(CRR[i,j])
-        slope_sample = float(SLOPES[i,j])
-        VMAX[i,j] = ... # here you put code to find the max speed at Crr_sample and
-# slope_sample
+        Crr_sample = arr.ARR(CRR[i], SLOPE[j], cfg.rover, cfg.planet)
+        #slope_sample = float(SLOPES[i,j])
+        VMAX[i] = Crr_sample  # here you put code to find the max speed at Crr_sample and slope_sample
+
+
+print(VMAX)
