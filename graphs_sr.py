@@ -11,17 +11,11 @@ import subfunctions as sf
 # Get gear ratio from speed reducer
 Ng = sf.get_gear_ratio(dictionary_357.speed_reducer)
 
-## below should be replaced with subfunction call?
-
 # Generate omega_motor (motor shaft speed) values
 omega_motor = np.linspace(0, dictionary_357.motor['speed_noload'], 100)
 
-
-# Calculate motor shaft torque for each omega
-tau_motor = dictionary_357.motor['torque_stall'] * (1 - omega_motor / dictionary_357.motor['speed_noload'])
-tau_motor = np.clip(tau_motor, 0, dictionary_357.motor['torque_stall'])
-
-## above should be replaced with subfunction call?
+# Calculate motor shaft torque using subfunctions
+tau_motor = sf.tau_dcmotor(omega_motor, dictionary_357.motor)
 
 # Calculate speed reducer output values
 omega_sr = omega_motor / Ng
