@@ -102,15 +102,14 @@ def main():
     for i, th in enumerate(slope_array_deg):
         v_max[i] = find_v_top(th)
 
-    # Save the required plot (comment out if your grader forbids files)
-    plt.figure()
+    plt.figure()    
     plt.plot(slope_array_deg, v_max, marker='o', linewidth=2)
     plt.xlabel('Slope angle, θ [deg]')
     plt.ylabel('Top speed v_max [m/s]')
     plt.title('Rover Top Speed vs Terrain Slope')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('vmax_vs_slope.png', dpi=180)
+    plt.show()  # <-- pops up a window; keep this LAST
 
 if __name__ == '__main__':
     main()
