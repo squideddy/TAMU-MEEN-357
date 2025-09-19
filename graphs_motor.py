@@ -42,7 +42,8 @@ plt.plot(omega, power)
 plt.xlabel("Motor Shaft Speed [rad/s]")
 plt.ylabel("Motor Power [W]")
 
+'''''
 # Show the plots
 plt.tight_layout()  # Adjusts spacing between subplots
 plt.show()
-
+'''''
