@@ -36,8 +36,10 @@ def ARR(Crr_array, theta_0, rover1, planet):
 
         try:
             V_min = 0 # minimum speed to search
-            V_maximum = 100
+            V_maximum = 1000
             V_max[n] = sf.basic_bisection(f, V_min , V_maximum, err_max =1e-6, iter_max = 1000)
+            if V_max[n] == 1000:
+                V_max[n] = np.nan
 
         except Exception:
             Vroot = np.nan

@@ -52,6 +52,9 @@ from scipy.special import erf
 import analysis_rolling_resistance as arr
 
 
+import time as time
+
+
 Crr_array = np.linspace(0.01,0.4,25)
 slope_array_deg = np.linspace(-10,35,25)
 
@@ -59,13 +62,28 @@ slope_array_deg = np.linspace(-10,35,25)
 CRR, SLOPE = np.meshgrid(Crr_array, slope_array_deg)
 VMAX = np.zeros(np.shape(CRR), dtype = float)
 
-
+timestart = time.perf_counter()
 N = np.shape(CRR)[0]
 for i in range(N):
-    for j in range(N):
-        Crr_sample = arr.ARR(CRR[i], SLOPE[j], cfg.rover, cfg.planet)
+#    for j in range(N):
+#        print('a',i)
+#        print(CRR[1], SLOPE[i])
+        Crr_sample = arr.ARR(CRR[1], SLOPE[i], cfg.rover, cfg.planet)
         #slope_sample = float(SLOPES[i,j])
         VMAX[i] = Crr_sample  # here you put code to find the max speed at Crr_sample and slope_sample
+        print("VMAX", VMAX)
 
 
-print(VMAX)
+#print(VMAX)
+
+endtime = time.perf_counter()
+print(timestart-endtime)
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(CRR, SLOPE, VMAX, cmap='viridis', linewidth=0, antialiased=False)
+
+ax.set_title("3D Surface Plot on Meshgrid")
+ax.set_xlabel("CRR")
+ax.set_ylabel("Slope")
+ax.set_zlabel("VMAX")
+plt.show()
