@@ -71,19 +71,19 @@ for i in range(N):
         Crr_sample = arr.ARR(CRR[1], SLOPE[i], cfg.rover, cfg.planet)
         #slope_sample = float(SLOPES[i,j])
         VMAX[i] = Crr_sample  # here you put code to find the max speed at Crr_sample and slope_sample
-        print("VMAX", VMAX)
+        print(time.perf_counter()- timestart)
 
 
 #print(VMAX)
 
 endtime = time.perf_counter()
-print(timestart-endtime)
+print(-(timestart-endtime))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(CRR, SLOPE, VMAX, cmap='viridis', linewidth=0, antialiased=False)
 
-ax.set_title("3D Surface Plot on Meshgrid")
+ax.set_title("")
 ax.set_xlabel("CRR")
-ax.set_ylabel("Slope")
-ax.set_zlabel("VMAX")
+ax.set_ylabel("Slope (degrees)")
+ax.set_zlabel("VMAX (m/s)")
 plt.show()
