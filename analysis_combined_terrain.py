@@ -42,7 +42,7 @@ your script.
 • ax = Axes3D(figure, elev = N1, azim = N2) # where N1 and N2
 will control the 3D view
 • ax.plot_surface(CRR, SLOPE, VMAX)
-As with the other analysis scripts: Do not display anything to the console."""
+As with the other analysis scripts: Do not display anything to the console.  """
 import numpy as np
 import matplotlib.pyplot as plt
 import subfunctions as sf
