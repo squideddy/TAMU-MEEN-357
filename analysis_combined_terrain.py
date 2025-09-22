@@ -42,4 +42,48 @@ your script.
 • ax = Axes3D(figure, elev = N1, azim = N2) # where N1 and N2
 will control the 3D view
 • ax.plot_surface(CRR, SLOPE, VMAX)
-As with the other analysis scripts: Do not display anything to the console."""
+As with the other analysis scripts: Do not display anything to the console.  """
+import numpy as np
+import matplotlib.pyplot as plt
+import subfunctions as sf
+import dictionary_357 as cfg
+import scipy.optimize as opt
+from scipy.special import erf
+import analysis_rolling_resistance as arr
+
+
+import time as time
+
+
+Crr_array = np.linspace(0.01,0.4,25)
+slope_array_deg = np.linspace(-10,35,25)
+
+
+CRR, SLOPE = np.meshgrid(Crr_array, slope_array_deg)
+VMAX = np.zeros(np.shape(CRR), dtype = float)
+
+timestart = time.perf_counter()
+N = np.shape(CRR)[0]
+for i in range(N):
+#    for j in range(N):
+#        print('a',i)
+#        print(CRR[1], SLOPE[i])
+        Crr_sample = arr.ARR(CRR[1], SLOPE[i], cfg.rover, cfg.planet)
+        #slope_sample = float(SLOPES[i,j])
+        VMAX[i] = Crr_sample  # here you put code to find the max speed at Crr_sample and slope_sample
+        print(time.perf_counter()- timestart)
+
+
+#print(VMAX)
+
+endtime = time.perf_counter()
+print(-(timestart-endtime))
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(CRR, SLOPE, VMAX, cmap='viridis', linewidth=0, antialiased=False)
+
+ax.set_title("")
+ax.set_xlabel("CRR")
+ax.set_ylabel("Slope (degrees)")
+ax.set_zlabel("VMAX (m/s)")
+plt.show()

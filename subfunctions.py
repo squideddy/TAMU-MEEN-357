@@ -199,3 +199,50 @@ def F_net(omega, terrain_angle, rover, planet, Crr):
     F_rolling_u = F_rolling(om, th, rover, planet, Crr)
 
     return F_drive_u + F_g_u + F_rolling_u
+
+############################################################################################################
+def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
+    # INitializaiton
+
+    # actual number of iterations
+    numIter = 0
+
+    done = False
+
+    err_est = np.nan
+    root = np.nan
+    range = xu - x1
+
+
+    if fun(xu) == 0:
+            root = xu
+            done = True
+            err_est = 0
+    
+    elif fun(x1) == 0:
+            root = x1
+            done = True
+            err_est = 0
+
+    # create a bisector
+    while not done:
+        numIter += 1
+
+        # find the bisector
+        average = (x1 + xu) / 2
+
+        # evaluate the function at the bisector
+        if fun(average) * fun(x1) < 0:
+            xu = average
+            if err_est < err_max or numIter == iter_max:
+                done = True
+                err_est = range / (2 ** numIter)
+                root = average
+
+        else:
+            x1 = average
+            if err_est < err_max or numIter == iter_max:
+                done = True
+                err_est = range / (2 ** numIter)
+                root = average
+    return root
