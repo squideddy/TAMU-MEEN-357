@@ -42,8 +42,7 @@ plt.plot(omega_sr, power_sr)
 plt.xlabel("Speed Reducer Output Shaft Speed [rad/s]")
 plt.ylabel("Speed Reducer Output Power [W]")
 
-'''''
+
 # Show the plots
 plt.tight_layout()
 plt.show()
-'''''
