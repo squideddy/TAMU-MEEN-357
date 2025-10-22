@@ -248,7 +248,8 @@ def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
     return root
 
 ############################################################################################################
-def motorW(v,rover): # v is 1D array translational velcity, rover is dictionary, calling will be w = motorW(v,rover) and returns motor speed [rad/s]
+
+def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary, calling will be w = motorW(v,rover) and returns motor speed [rad/s]
      # Check numeric / array type
     if not isinstance(v, (int, float, np.ndarray)):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
@@ -256,5 +257,12 @@ def motorW(v,rover): # v is 1D array translational velcity, rover is dictionary,
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
     #Calculating motor angular velocity
-    Ng = get_gear_ratio()
+    r = rover['wheel_assembly']['wheel']['radius']              # [m]
+    Ng = get_gear_ratio(rover['wheel_assembly']['speed_reducer'])
+
+    # Compute
+    v_arr = np.asarray(v, dtype=float)
+    w_motor = (v_arr / r) * Ng   # [rad/s]
+    return w_motor if np.ndim(v) == 0 else w_motor
+
     
