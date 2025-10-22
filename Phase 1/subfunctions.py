@@ -263,5 +263,4 @@ def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary
     w_motor = (v_arr / r) * Ng   # [rad/s]
     return w_motor if np.ndim(v) == 0 else w_motor
 
-def rover_dynamics(t,y,rover,planet,exepriment):
-    
+#def rover_dynamics(t,y,rover,planet,exepriment):
