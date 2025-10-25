@@ -37,7 +37,7 @@ def tau_dcmotor(omega, motor): #Returns the motor shaft torque when given motor 
     
     # Raise errors
     if isinstance(omega, np.ndarray):
-        if omega.ndim != 1:
+        if omega.ndim > 1:
             raise Exception("Error: Invalid input type. Expected a acalar or vector numpy array of size 1.")
     elif not isinstance(omega, (int, float)):
         raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
@@ -59,7 +59,7 @@ def F_drive(omega, rover): #Returns the force applied to the rover by the drive 
     if not np.any(isinstance(omega, (int, float, np.ndarray))): 
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
     
-    if isinstance(omega, np.ndarray) and len(omega.shape) != 1:
+    if isinstance(omega, np.ndarray) and len(omega.shape) > 1:
         raise  Exception("Error: Invalid input type. Expected a number or numpy array of size 1.")
     if not isinstance(rover, dict): 
         raise   TypeError("Error: Invalid input type. Expected a dictionary.")
@@ -320,7 +320,9 @@ def rover_dynamics(t,y,rover,planet,experiment):
 
     # -------- derivative of state --------
     return np.array([a, v], dtype=float)
-import dictionary_357 as dict
-import define_experiment as experiment
-rover  = getattr(cfg, 'rover',  None)
-print(rover_dynamics(5,np.array([1, 2]),rover,))
+import dictionary_357 as dictionary1
+from define_experiment import experiment1
+rover  = getattr(dictionary1, 'rover',  None)
+planet = getattr(dictionary1,'planet',None)
+experiment_dict,end_events_dict = experiment1()
+print(rover_dynamics(5,np.array([.35, 50]),rover,planet,experiment_dict))
