@@ -246,6 +246,7 @@ def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
                 err_est = range / (2 ** numIter)
                 root = average
     return root
+############################################################################################################
 
 def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary, calling will be w = motorW(v,rover) and returns motor speed [rad/s]
      # Check numeric / array type
@@ -263,4 +264,63 @@ def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary
     w_motor = (v_arr / r) * Ng   # [rad/s]
     return w_motor if np.ndim(v) == 0 else w_motor
 
-#def rover_dynamics(t,y,rover,planet,exepriment):
+############################################################################################################
+
+def rover_dynamics(t,y,rover,planet,experiment): 
+    """
+    Compute state derivative for the rover.
+      y[0] = velocity [m/s]
+      y[1] = position [m]
+    Returns:
+      dydt[0] = acceleration [m/s^2]
+      dydt[1] = velocity [m/s]
+    """
+    from scipy.interpolate import interp1d
+
+    # -------- validate y --------
+    y_arr = np.asarray(y, dtype=float).reshape(-1)
+    if y_arr.size != 2:
+        raise Exception("Error: y must be a 1D array-like with two elements: [velocity, position].")
+    v, x = float(y_arr[0]), float(y_arr[1])
+
+    # -------- validate dicts --------
+    if not isinstance(rover, dict):
+        raise Exception("Error: 'rover' must be a dictionary.")
+    if not isinstance(planet, dict):
+        raise Exception("Error: 'planet' must be a dictionary.")
+    if not isinstance(experiment, dict):
+        raise Exception("Error: 'experiment' must be a dictionary.")
+
+    # -------- get experiment data --------
+    try:
+        alpha_dist = np.asarray(experiment['alpha_dist'], dtype=float)
+        alpha_deg  = np.asarray(experiment['alpha_deg'],  dtype=float)
+    except KeyError as e:
+        raise Exception(f"Error: experiment missing key {e!s} ('alpha_dist' and 'alpha_deg' required).")
+
+    if alpha_dist.ndim != 1 or alpha_deg.ndim != 1 or alpha_dist.size != alpha_deg.size:
+        raise Exception("Error: alpha_dist and alpha_deg must be 1D arrays of equal length.")
+
+    # Rolling resistance coefficient
+    if 'Crr' not in experiment:
+        raise Exception("Error: experiment must include 'Crr' (rolling resistance coefficient).")
+    Crr = float(experiment['Crr'])
+    if Crr <= 0:
+        raise Exception("Error: 'Crr' must be a positive scalar.")
+
+    # -------- terrain angle at current position (degrees) --------
+    alpha_fun = interp1d(alpha_dist, alpha_deg, kind='cubic', fill_value='extrapolate')
+    terrain_angle_deg = float(alpha_fun(x))
+
+    # -------- dynamics: compute motor speed, forces, acceleration --------
+    omega = motorW(v, rover)  # [rad/s], uses your get_gear_ratio & wheel radius
+    F     = F_net(omega, terrain_angle_deg, rover, planet, Crr)  # net force [N]
+    m     = get_mass(rover)  # [kg]
+    a     = F / m            # [m/s^2]
+
+    # -------- derivative of state --------
+    return np.array([a, v], dtype=float)
+import dictionary_357 as dict
+import define_experiment as experiment
+rover  = getattr(cfg, 'rover',  None)
+print(rover_dynamics(5,np.array([1, 2]),rover,))
