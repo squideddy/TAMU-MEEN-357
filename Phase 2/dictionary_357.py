@@ -1,4 +1,4 @@
-
+import numpy as np
 rover = {}
 
 
@@ -29,3 +29,20 @@ rover['science_payload'] = science_payload
 rover['power_subsys'] = power_subsys
 
 planet = {"g": 3.72}
+
+rover['telemetry'] = {
+    "time": [],
+    "completion_time": 0.0,
+    "velocity": [],
+    "position": [],
+    "distance_traveled": 0.0,
+    "max_velocity": 0.0,
+    "average_velocity": 0.0,
+    "power": [],
+    "battery_energy": 0.0,
+    "energy_per_distance": 0.0
+}
+
+
+effcy_tau = np.array([0, 10, 20, 40, 70, 165])
+effcy = np.array([0, 0.55, 0.75, 0.71, 0.50, 0.05])
