@@ -348,7 +348,7 @@ def mechpower(v, rover): #computes the mechanical power output of the rover's dr
 def battenergy(t,v,rover): #computes the total battery energy consumed over time t [s] given velocity v [m/s] and rover dictionary
     if not( isinstance(t, np.ndarray) and t.ndim == 1):
         raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-    if not (isinstance(v, ( np.ndarray)) and v.ndim ==1):
+    if not (isinstance(v, np.ndarray) and v.ndim ==1):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
