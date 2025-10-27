@@ -2,7 +2,6 @@
 from asyncio import events
 import numpy as np
 import math as m
-import scipy.integrate as spi
 
 # PART 1 SUBFUNCTIONS BELOW 
 ############################################################################################################
@@ -361,11 +360,8 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     if t.size != v.size:
         raise Exception("Error: 't' and 'v' must be the same length.")
     P_mech = mechpower(v, rover) *6
-    #print((P_mech))
-    #print("t = ", (t))
-    E_batt = spi.cumulative_simpson(P_mech, x=t)
-    #print("ebatt = ", E_batt)
-    return E_batt[-1]
+    E_batt = np.trapz(P_mech, t)
+    return E_batt
 
 
 def end_of_mission_event(end_event):
