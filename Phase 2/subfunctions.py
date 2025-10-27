@@ -358,16 +358,35 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     Computes the total battery energy consumed over time t [s] 
     given velocity v [m/s] and rover dictionary.
     """
-    if not( isinstance(t, np.ndarray) and t.ndim == 1):
-        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-    if not (isinstance(v, np.ndarray) and v.ndim ==1):
-        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
+
+    if isinstance(t, np.ndarray):
+        if t.ndim > 1:
+            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
+    elif not isinstance(t, (int, float)):
+        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
+
+    if isinstance(v, np.ndarray):
+        if v.ndim > 1:
+            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
+    elif not isinstance(v, (int, float)):
+        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
+
+
+
+#    if not isinstance(t, np.ndarray) :
+#        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+#    elif t.ndim != 1:
+#        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+#    if not isinstance(v, np.ndarray):
+#        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
+#    elif v.ndim != 1:
+        raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
     if t.size != v.size:
         raise Exception("Error: 't' and 'v' must be the same length.")
     # Mechanical power output of all six wheels
-    P_mech = mechpower(v, rover) *6 # [W]
+    P_mech = mechpower(v, rover) * 6 # [W]
     #print((P_mech))
     #print("t = ", (t))
     # Calculate battery energy consumed using trapezoidal integration
