@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 
 # Extract efficiency data from dictionary_357
 effcy_tau = dictionary_357.effcy_tau
-effcy = dictionary_357.effcy
+effcy = dictionary_357.effcy *100 # convert to percentage
 
 # Build cubic interpolation function (cubic spline)
 effcy_fun = interp1d(effcy_tau, effcy, kind='cubic') # fit the cubic spline
