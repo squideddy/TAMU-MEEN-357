@@ -11,14 +11,14 @@ import numpy as np
 
 def experiment1():
     
-    experiment = {'time_range' : np.array([0,20000]),
-                  'initial_conditions' : np.array([0.3025,0]),
+    experiment = {'time_range' : np.array([0,20000]), # [s] simulation start and end time
+                  'initial_conditions' : np.array([0.3025,0]), # [m/s, m] initial velocity and position
                   'alpha_dist' : np.array([0, 100, 200, 300, 400, 500, 600, \
-                                           700, 800, 900, 1000]),
+                                           700, 800, 900, 1000]), # [m] distances for slope data
                   'alpha_deg' : np.array([11.509, 2.032, 7.182, 2.478, \
                                         5.511, 10.981, 5.601, -0.184, \
-                                        0.714, 4.151, 4.042]),
-                  'Crr' : 0.1}
+                                        0.714, 4.151, 4.042]), # [deg] corresponding terrain angles
+                  'Crr' : 0.1} # rolling resistance coefficient
     
     
     # Below are default values for example only: ### Modified to match Task 8, no longer example values ###
