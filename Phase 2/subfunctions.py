@@ -257,12 +257,10 @@ def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
 # PART 2 SUBFUNCTIONS BELOW
 ############################################################################################################
 
-def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary
+def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary, calling will be w = motorW(v,rover) and returns motor speed [rad/s]
     """
-     Compute the motor shaft angular velocity [rad/s] from rover translational velocity [m/s].
-     Calling syntax: w = motorW(v, rover)
-     Returns motor speed for each wheel, accounting for wheel radius and gear ratio.
-     """
+    Computes the motor speed [rad/s] given the translational velocity [m/s] and rover dictionary.
+    """
      # Check numeric / array type
     if not isinstance(v, (int, float, np.ndarray)):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
@@ -338,23 +336,50 @@ def rover_dynamics(t, y, rover, planet, experiment):
 ############################################################################################################
 
 def mechpower(v, rover): #computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary
+    """
+    Computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary.
+    """
     if not isinstance(v, (int, float, np.ndarray)):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
     elif isinstance(v, np.ndarray) and v.ndim > 1:
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
-    
+    # retrieving torque and motor speed to compute mechanical power
     torque_motor = tau_dcmotor(motorW(v, rover), rover['wheel_assembly']['motor'])
-    motorw = motorW(v, rover)
+    motorw = motorW(v, rover) # rad/sec
+    #compute mechanical power
     P_mech = torque_motor * motorw 
-    return P_mech
+    return P_mech # [W] for one wheel
 
 def battenergy(t,v,rover): #computes the total battery energy consumed over time t [s] given velocity v [m/s] and rover dictionary
-    if not( isinstance(t, np.ndarray) and t.ndim == 1):
+    """
+    Computes the total battery energy consumed over time t [s] 
+    given velocity v [m/s] and rover dictionary.
+    """
+
+    if isinstance(t, np.ndarray):
+        if t.ndim > 1:
+            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
+    elif not isinstance(t, (int, float)):
+        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
+
+    if isinstance(v, np.ndarray):
+        if v.ndim > 1:
+            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
+    elif not isinstance(v, (int, float)):
+        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
+
+
+
+    if not isinstance(t, np.ndarray) :
         raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-    if not (isinstance(v, np.ndarray) and v.ndim ==1):
+    elif t.ndim != 1:
+        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+    if not isinstance(v, np.ndarray):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
+    elif v.ndim != 1:
+        raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
     if t.size != v.size:
@@ -395,7 +420,8 @@ def end_of_mission_event(end_event):
 
 def simulate_rover(rover, planet, experiment, end_event): 
     """
-    integrates the trajectory of a rover
+    Main function that integrates the trajectory of a rover
+    solves the IVP for the rover dynamics over the specified time range
     Returns time array, velocity array, position array.
     """
     from scipy.integrate import solve_ivp
@@ -442,7 +468,7 @@ def simulate_rover(rover, planet, experiment, end_event):
     rover['telemetry']['average_velocity'] = rover['telemetry']['distance_traveled']/ rover['telemetry']['completion_time'] if rover['telemetry']['completion_time'] > 0 else 0.0
     rover['telemetry']['power'] = mechpower(sol.y[0,:], rover)
     rover['telemetry']['battery_energy'] = battenergy(sol.t, sol.y[0,:], rover)
-    rover['telemetry']['energy_per_distance'] = rover['telemetry']['battery_energy']/ rover['telemetry']['distance_traveled'] if rover['telemetry']['distance_traveled'] > 0 else 0.0
+    rover['telemetry']['energy_per_distance'] = (rover['telemetry']['battery_energy']/ rover['telemetry']['distance_traveled']) 
     return rover['telemetry']
 
 
