@@ -320,6 +320,7 @@ def rover_dynamics(t,y,rover,planet,experiment):
 
     # -------- derivative of state --------
     return np.array([a, v], dtype=float)
+#Testing rover_dynamics
 import dictionary_357 as dictionary1
 from define_experiment import experiment1
 rover  = getattr(dictionary1, 'rover',  None)
