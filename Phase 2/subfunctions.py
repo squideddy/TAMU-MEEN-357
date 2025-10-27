@@ -257,7 +257,12 @@ def basic_bisection(fun, x1=0 , xu=2, err_max =1e-6, iter_max = 1000):
 # PART 2 SUBFUNCTIONS BELOW
 ############################################################################################################
 
-def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary, calling will be w = motorW(v,rover) and returns motor speed [rad/s]
+def motorW(v,rover): # v is 1D array translational velocity, rover is dictionary
+    """
+     Compute the motor shaft angular velocity [rad/s] from rover translational velocity [m/s].
+     Calling syntax: w = motorW(v, rover)
+     Returns motor speed for each wheel, accounting for wheel radius and gear ratio.
+     """
      # Check numeric / array type
     if not isinstance(v, (int, float, np.ndarray)):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
@@ -339,10 +344,9 @@ def mechpower(v, rover): #computes the mechanical power output of the rover's dr
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
-    # retrieving torque and motor speed to compute mechanical power
+    
     torque_motor = tau_dcmotor(motorW(v, rover), rover['wheel_assembly']['motor'])
     motorw = motorW(v, rover)
-    #compute mechanical power
     P_mech = torque_motor * motorw 
     return P_mech
 
@@ -355,9 +359,7 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
         raise Exception("Error: 'rover' must be a dictionary.")
     if t.size != v.size:
         raise Exception("Error: 't' and 'v' must be the same length.")
-    # Mechanical power output of all six wheels
     P_mech = mechpower(v, rover) *6
-    # Calculate battery energy consumed using trapezoidal integration
     E_batt = np.trapz(P_mech, t)
     return E_batt
 
