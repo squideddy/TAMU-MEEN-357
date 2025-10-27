@@ -21,10 +21,10 @@ def experiment1():
                   'Crr' : 0.1}
     
     
-    # Below are default values for example only:
-    end_event = {'max_distance' : 50,
-                 'max_time' : 5000,
-                 'min_velocity' : 0.01}
+    # Below are default values for example only: ### Modified to match Task 8, no longer example values ###
+    end_event = {'max_distance' : 1000, ##Modified to 1000 m for Task 8##
+                 'max_time' : 10000, ##Modified to 10,000 s for Task 8##
+                 'min_velocity' : 0.01} ##Modified to 0.01 m/s for Task 8##
     
     return experiment, end_event
 
