@@ -329,13 +329,8 @@ def rover_dynamics(t, y, rover, planet, experiment):
 
     # derivative of state
     return np.array([a, v], dtype=float)
-import dictionary_357 as dictionary1
-from define_experiment import experiment1
-rover  = getattr(dictionary1, 'rover',  None)
-planet = getattr(dictionary1,'planet',None)
-experiment_dict,end_events_dict = experiment1()
-#print(rover_dynamics(5,np.array([.35, 50]),rover,planet,experiment_dict))
 
+############################################################################################################
 
 def mechpower(v, rover): #computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary
     if not isinstance(v, (int, float, np.ndarray)):
