@@ -326,4 +326,4 @@ from define_experiment import experiment1
 rover  = getattr(dictionary1, 'rover',  None)
 planet = getattr(dictionary1,'planet',None)
 experiment_dict,end_events_dict = experiment1()
-print(rover_dynamics(5,np.array([.35, 50]),rover,planet,experiment_dict))
+print(rover_dynamics(0,np.array([.3025, 0]),rover,planet,experiment_dict))
