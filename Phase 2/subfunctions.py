@@ -334,7 +334,7 @@ from define_experiment import experiment1
 rover  = getattr(dictionary1, 'rover',  None)
 planet = getattr(dictionary1,'planet',None)
 experiment_dict,end_events_dict = experiment1()
-print(rover_dynamics(5,np.array([.35, 50]),rover,planet,experiment_dict))
+#print(rover_dynamics(5,np.array([.35, 50]),rover,planet,experiment_dict))
 
 
 def mechpower(v, rover): #computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary
@@ -412,18 +412,7 @@ def simulate_rover(rover, planet, experiment, end_event):
 
     # get experiment data
     # should populate the telemetry dictionary in rover
-    rover['telemetry'] = {
-    "time": [],
-    "completion_time": 0.0,
-    "velocity": [],
-    "position": [],
-    "distance_traveled": 0.0,
-    "max_velocity": 0.0,
-    "average_velocity": 0.0,
-    "power": [],
-    "battery_energy": 0.0,
-    "energy_per_distance": 0.0
-}
+    
     try:
         time_range = np.asarray(experiment['time_range'], dtype=float)
         initial_conditions = np.asarray(experiment['initial_conditions'], dtype=float)
@@ -439,9 +428,10 @@ def simulate_rover(rover, planet, experiment, end_event):
     sol = solve_ivp(fun=lambda t,y: rover_dynamics(t,y,rover,planet,experiment),
                     t_span=(time_range[0], time_range[1]),
                     y0=initial_conditions,
-                    method='RK45',
+                    method='BDF',
                     events=events,
                     max_step=1.0)
+    
     # store telemetry data
     rover['telemetry']['time'] = sol.t
     rover['telemetry']['velocity'] = sol.y[0,:]
