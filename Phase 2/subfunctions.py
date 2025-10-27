@@ -339,9 +339,10 @@ def mechpower(v, rover): #computes the mechanical power output of the rover's dr
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
-    
+    # retrieving torque and motor speed to compute mechanical power
     torque_motor = tau_dcmotor(motorW(v, rover), rover['wheel_assembly']['motor'])
     motorw = motorW(v, rover)
+    #compute mechanical power
     P_mech = torque_motor * motorw 
     return P_mech
 
@@ -354,7 +355,9 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
         raise Exception("Error: 'rover' must be a dictionary.")
     if t.size != v.size:
         raise Exception("Error: 't' and 'v' must be the same length.")
+    # Mechanical power output of all six wheels
     P_mech = mechpower(v, rover) *6
+    # Calculate battery energy consumed using trapezoidal integration
     E_batt = np.trapz(P_mech, t)
     return E_batt
 
