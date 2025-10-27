@@ -444,7 +444,7 @@ def simulate_rover(rover, planet, experiment, end_event):
     rover['telemetry']['average_velocity'] = rover['telemetry']['distance_traveled']/ rover['telemetry']['completion_time'] if rover['telemetry']['completion_time'] > 0 else 0.0
     rover['telemetry']['power'] = mechpower(sol.y[0,:], rover)
     rover['telemetry']['battery_energy'] = battenergy(sol.t, sol.y[0,:], rover)
-    rover['telemetry']['energy_per_distance'] = rover['telemetry']['battery_energy']/ rover['telemetry']['distance_traveled'] if rover['telemetry']['distance_traveled'] > 0 else 0.0
+    rover['telemetry']['energy_per_distance'] = (rover['telemetry']['battery_energy']/ rover['telemetry']['distance_traveled']) 
     return rover['telemetry']
 
 

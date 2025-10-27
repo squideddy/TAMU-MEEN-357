@@ -6,7 +6,7 @@ the `experiment1` setup in `define_experiment.py` and the rover
 and planet dictionaries in `dictionary_357.py`. It then plots
 velocity, position, and power vs time and saves the figure.
 """
-
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -27,6 +27,17 @@ t = telemetry['time']
 v = telemetry['velocity']
 x = telemetry['position']
 power = telemetry.get('power', None)
+
+# save summary data to JSON file
+with open("C:\\Users\\edwar\\OneDrive\\Documents\\TAMU files\\5 - Fall 2025\\MEEN 357 - Engr Analysis for mech\\TAMU-MEEN-357\\Phase 2\\summary.json", "w") as json_file:
+    json.dump({
+        "completion_time": t[-1] ,
+        "distance_traveled": x[-1] ,
+        "max_velocity": max(v) ,
+        "average_velocity": np.mean(v) ,
+        "battery_energy": telemetry.get('battery_energy', 0),
+        "batt_energy_per_distance": telemetry.get('energy_per_distance', 0)
+    }, json_file)
 
 ## create subplots for velocity, position, and power
 # position
