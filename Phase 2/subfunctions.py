@@ -375,7 +375,7 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
         raise Exception("Error: 'rover' must be a dictionary.")
 
     P_mech = mechpower(v, rover) *6
-    E_batt = np.trapz(P_mech, t)
+    E_batt = np.trapezoid(P_mech, t)
     return E_batt
 
 
