@@ -2,6 +2,7 @@
 from asyncio import events
 import numpy as np
 import math as m
+from scipy import interpolate as sp
 
 # PART 1 SUBFUNCTIONS BELOW 
 ############################################################################################################
@@ -378,6 +379,7 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
                 the input simulation profile. [J] 
     """
 
+
     if not isinstance(t, np.ndarray) :
         raise Exception("Error: 't' must be a 1D numpy array of numbers.")
     elif t.ndim != 1:
@@ -392,19 +394,22 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
         raise Exception("Error: 't' and 'v' must be the same length.")
     # Mechanical power output of all six wheels
 
-    P_mech = mechpower(v, rover) * 6 # [W]545
+    P_mech = mechpower(v, rover) # [W] 
     omega = motorW(v, rover)
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
 
     #efficiency interpolation function for torque
-    effcy_tau = rover['wheel_assembly']['motor']['efficiency_tau']
-    effcy_vals = rover['wheel_assembly']['motor']['efficiency_vals']
-    
-    E_batt = spi.cumulative_simpson(P_mech, x=t) # [J]
+    effcy_tau = rover['wheel_assembly']['motor']['efficiency']['effcy_tau']
+    effcy_vals = rover['wheel_assembly']['motor']['efficiency']['effcy']
+    effcy_fun = sp.interp1d(effcy_tau, effcy_vals, kind='cubic', fill_value="extrapolate")
+    eta = effcy_fun(tau)
 
+    # Integrate electrical power over time to get battery energy consumed
+    # Electrical power input to all six motors
+    P_elec = np.where(eta<= 1e-9, 0, P_mech / eta) * 6 # [W]
+    E_batt = np.trapz(P_elec, t)  # [J]
 
-
-    return E_batt[-1]
+    return E_batt
 
 
 def end_of_mission_event(end_event):
