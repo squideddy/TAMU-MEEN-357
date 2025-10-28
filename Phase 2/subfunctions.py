@@ -358,32 +358,22 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     given velocity v [m/s] and rover dictionary.
     """
 
-    if isinstance(t, np.ndarray):
-        if t.ndim > 1:
-            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
-    elif not isinstance(t, (int, float)):
-        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
-
-    if isinstance(v, np.ndarray):
-        if v.ndim > 1:
-            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
-    elif not isinstance(v, (int, float)):
-        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
-
-
-
-    if not isinstance(t, np.ndarray) :
-        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-    elif t.ndim != 1:
-        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+  # (a) Validate t and v
+    if not isinstance(t, np.ndarray):
+        raise Exception("Error: 't' must be a NumPy array.")
     if not isinstance(v, np.ndarray):
-        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
-    elif v.ndim != 1:
-        raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
+        raise Exception("Error: 'v' must be a NumPy array.")
+    if t.ndim != 1 or v.ndim != 1:
+        raise Exception("Error: 't' and 'v' must both be 1D vectors.")
+    if t.size != v.size:
+        raise Exception("Error: 't' and 'v' must have the same length.")
+    if not np.issubdtype(t.dtype, np.number) or not np.issubdtype(v.dtype, np.number):
+        raise Exception("Error: 't' and 'v' must contain numeric values only.")
+
+    # (b) Validate rover
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
-    if t.size != v.size:
-        raise Exception("Error: 't' and 'v' must be the same length.")
+
     P_mech = mechpower(v, rover) *6
     E_batt = np.trapz(P_mech, t)
     return E_batt
