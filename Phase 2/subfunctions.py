@@ -339,12 +339,24 @@ def rover_dynamics(t, y, rover, planet, experiment):
 def mechpower(v, rover): #computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary
     """
     Computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary.
+    
+    Calling Syntax 
+            P = mechpower(v,rover) 
+    Input Arguments 
+            v - 1D numpy array 
+        OR scalar float/int 
+                Rover velocity data obtained from a simulation [m/s] 
+                rover dict Data structure containing rover definition 
+    Return Arguments 
+            P - 1D numpy array  OR  scalar float/int 
+            Instantaneous power output of a single motor corresponding to each element in v [W].  
+            Return argument should be the same size as input v.
     """
-    if not isinstance(v, (int, float, np.ndarray)):
+    if not (isinstance(v, (int, float, np.ndarray))):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
     elif isinstance(v, np.ndarray) and v.ndim > 1:
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
-    if not isinstance(rover, dict):
+    if not (isinstance(rover, dict)):
         raise Exception("Error: 'rover' must be a dictionary.")
     # retrieving torque and motor speed to compute mechanical power
     torque_motor = tau_dcmotor(motorW(v, rover), rover['wheel_assembly']['motor'])
@@ -357,41 +369,42 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     """
     Computes the total battery energy consumed over time t [s] 
     given velocity v [m/s] and rover dictionary.
+
+    Input Arguments 
+        t  - 1D numpy array N-element array of time samples from a rover simulation [s] 
+        v  - 1D numpy array N-element array of rover velocity data from a simulation [m/s] 
+        rover  -  dict Data structure containing rover definition 
+    Return Arguments 
+        E  -  scalar Total electrical energy consumed from the rover battery pack over 
+                the input simulation profile. [J] 
     """
 
-    if isinstance(t, np.ndarray):
-        if t.ndim > 1:
-            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
-    elif not isinstance(t, (int, float)):
-        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
-
-    if isinstance(v, np.ndarray):
-        if v.ndim > 1:
-            raise Exception("Error: Invalid input type. Expected a scalar or vector numpy array of size 1.")
-    elif not isinstance(v, (int, float)):
-        raise TypeError("Error: Invalid input type. Expected a scalar or vector.")
-
-
-
-#    if not isinstance(t, np.ndarray) :
-#        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-#    elif t.ndim != 1:
-#        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-#    if not isinstance(v, np.ndarray):
-#        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
-#    elif v.ndim != 1:
+    if not isinstance(t, np.ndarray) :
+        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+    elif t.ndim != 1:
+        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+    if not isinstance(v, np.ndarray):
+        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
+    elif v.ndim != 1:
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
     if t.size != v.size:
         raise Exception("Error: 't' and 'v' must be the same length.")
     # Mechanical power output of all six wheels
-    P_mech = mechpower(v, rover) * 6 # [W]
-    #print((P_mech))
-    #print("t = ", (t))
-    # Calculate battery energy consumed using trapezoidal integration
+
+    P_mech = mechpower(v, rover) * 6 # [W]545
+    omega = motorW(v, rover)
+    tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
+
+    #efficiency interpolation function for torque
+    effcy_tau = rover['wheel_assembly']['motor']['efficiency_tau']
+    effcy_vals = rover['wheel_assembly']['motor']['efficiency_vals']
+    
     E_batt = spi.cumulative_simpson(P_mech, x=t) # [J]
-    #print("ebatt = ", E_batt)
+
+
+
     return E_batt[-1]
 
 
