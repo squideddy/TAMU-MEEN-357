@@ -374,10 +374,23 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
 
-    P_mech = mechpower(v, rover) *6
-    E_batt = np.trapezoid(P_mech, t)
-    return E_batt
+   
+    P_mech = mechpower(v, rover) # [W] 
+    omega = motorW(v, rover)
+    tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
 
+    #efficiency interpolation function for torque
+    effcy_tau = rover['wheel_assembly']['motor']['efficiency']['effcy_tau']
+    effcy_vals = rover['wheel_assembly']['motor']['efficiency']['effcy']
+    effcy_fun = sp.interp1d(effcy_tau, effcy_vals, kind='cubic', fill_value="extrapolate")
+    eta = effcy_fun(tau)
+
+    # Integrate electrical power over time to get battery energy consumed
+    # Electrical power input to all six motors
+    P_elec = np.where(eta<= 1e-9, 0, P_mech / eta) * 6 # [W]
+    E_batt = np.trapz(P_elec, t)  # [J]
+
+    return E_batt
 
 def end_of_mission_event(end_event):
     """
