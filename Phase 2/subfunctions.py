@@ -2,7 +2,6 @@
 from asyncio import events
 import numpy as np
 import math as m
-import scipy.integrate as spi
 
 # PART 1 SUBFUNCTIONS BELOW 
 ############################################################################################################

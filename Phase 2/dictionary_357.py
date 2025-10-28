@@ -43,6 +43,10 @@ rover['telemetry'] = {
     "energy_per_distance": 0.0
 }
 
-
 effcy_tau = np.array([0, 10, 20, 40, 70, 165])
 effcy = np.array([0, 0.55, 0.75, 0.71, 0.50, 0.05])
+# put efficiency data into the rover dict (either location is fine; pick one)
+rover['wheel_assembly']['motor']['efficiency'] = {
+    'tau': effcy_tau,
+    'eta': effcy
+}
