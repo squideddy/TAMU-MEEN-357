@@ -2,7 +2,6 @@
 from asyncio import events
 import numpy as np
 import math as m
-from scipy import interpolate as sp
 
 # PART 1 SUBFUNCTIONS BELOW 
 ############################################################################################################
@@ -339,24 +338,12 @@ def rover_dynamics(t, y, rover, planet, experiment):
 def mechpower(v, rover): #computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary
     """
     Computes the mechanical power output of the rover's drive system given velocity v [m/s] and rover dictionary.
-    
-    Calling Syntax 
-            P = mechpower(v,rover) 
-    Input Arguments 
-            v - 1D numpy array 
-        OR scalar float/int 
-                Rover velocity data obtained from a simulation [m/s] 
-                rover dict Data structure containing rover definition 
-    Return Arguments 
-            P - 1D numpy array  OR  scalar float/int 
-            Instantaneous power output of a single motor corresponding to each element in v [W].  
-            Return argument should be the same size as input v.
     """
-    if not (isinstance(v, (int, float, np.ndarray))):
+    if not isinstance(v, (int, float, np.ndarray)):
         raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
     elif isinstance(v, np.ndarray) and v.ndim > 1:
         raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
-    if not (isinstance(rover, dict)):
+    if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
     # retrieving torque and motor speed to compute mechanical power
     torque_motor = tau_dcmotor(motorW(v, rover), rover['wheel_assembly']['motor'])
@@ -369,46 +356,26 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     """
     Computes the total battery energy consumed over time t [s] 
     given velocity v [m/s] and rover dictionary.
-
-    Input Arguments 
-        t  - 1D numpy array N-element array of time samples from a rover simulation [s] 
-        v  - 1D numpy array N-element array of rover velocity data from a simulation [m/s] 
-        rover  -  dict Data structure containing rover definition 
-    Return Arguments 
-        E  -  scalar Total electrical energy consumed from the rover battery pack over 
-                the input simulation profile. [J] 
     """
 
-
-    if not isinstance(t, np.ndarray) :
-        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
-    elif t.ndim != 1:
-        raise Exception("Error: 't' must be a 1D numpy array of numbers.")
+  # (a) Validate t and v
+    if not isinstance(t, np.ndarray):
+        raise Exception("Error: 't' must be a NumPy array.")
     if not isinstance(v, np.ndarray):
-        raise Exception("Error: 'v' must be a scalar or 1D numpy array of numbers.")
-    elif v.ndim != 1:
-        raise Exception("Error: 'v' must be a 1D numpy array of numbers.")
+        raise Exception("Error: 'v' must be a NumPy array.")
+    if t.ndim != 1 or v.ndim != 1:
+        raise Exception("Error: 't' and 'v' must both be 1D vectors.")
+    if t.size != v.size:
+        raise Exception("Error: 't' and 'v' must have the same length.")
+    if not np.issubdtype(t.dtype, np.number) or not np.issubdtype(v.dtype, np.number):
+        raise Exception("Error: 't' and 'v' must contain numeric values only.")
+
+    # (b) Validate rover
     if not isinstance(rover, dict):
         raise Exception("Error: 'rover' must be a dictionary.")
-    if t.size != v.size:
-        raise Exception("Error: 't' and 'v' must be the same length.")
-    # Mechanical power output of all six wheels
 
-    P_mech = mechpower(v, rover) # [W] 
-    omega = motorW(v, rover)
-    tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
-
-    #efficiency interpolation function for torque
-    effcy_tau = rover['wheel_assembly']['motor']['efficiency']['effcy_tau']
-    effcy_vals = rover['wheel_assembly']['motor']['efficiency']['effcy']
-    effcy_fun = sp.interp1d(effcy_tau, effcy_vals, kind='cubic', fill_value="extrapolate")
-    eta = effcy_fun(tau)
-
-    # Integrate electrical power over time to get battery energy consumed
-    # Electrical power input to all six motors
-    P_elec = np.where(eta<= 1e-9, 0, P_mech / eta) * 6 # [W]
-    E_batt = np.trapz(P_elec, t)  # [J]
-
+    P_mech = mechpower(v, rover) *6
+    E_batt = np.trapezoid(P_mech, t)
     return E_batt
 
 
