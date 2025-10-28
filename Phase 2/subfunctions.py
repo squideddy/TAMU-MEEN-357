@@ -2,7 +2,7 @@
 from asyncio import events
 import numpy as np
 import math as m
-
+import scipy.interpolate as sp
 # PART 1 SUBFUNCTIONS BELOW 
 ############################################################################################################
 def get_mass(rover): # Computes the total mass of the rover. Uses information in the rover dict.
@@ -380,8 +380,8 @@ def battenergy(t,v,rover): #computes the total battery energy consumed over time
     tau = tau_dcmotor(omega, rover['wheel_assembly']['motor'])
 
     #efficiency interpolation function for torque
-    effcy_tau = rover['wheel_assembly']['motor']['efficiency']['effcy_tau']
-    effcy_vals = rover['wheel_assembly']['motor']['efficiency']['effcy']
+    effcy_tau = rover['wheel_assembly']['motor']['effcy_tau']
+    effcy_vals = rover['wheel_assembly']['motor']['effcy']
     effcy_fun = sp.interp1d(effcy_tau, effcy_vals, kind='cubic', fill_value="extrapolate")
     eta = effcy_fun(tau)
 
