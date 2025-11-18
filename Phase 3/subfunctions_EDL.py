@@ -18,10 +18,13 @@ def get_mass_rover(edl_system):
     struct. Assumes that the rover is defined as a dict corresponding to 
     the specification of project Phase 1.
 
-    Input: EDL_system dictionary
+    Input: 
+      - edl_system: dict (must be a dictionary)
 
-    Output: Mass of the EDL system
+    Output: 
+      - m: int/float mass of the rockets    
     """    
+    
     m = 6*(edl_system['rover']['wheel_assembly']['motor']['mass'] + 
            edl_system['rover']['wheel_assembly']['speed_reducer']['mass'] + 
            edl_system['rover']['wheel_assembly']['wheel']['mass']) + \
@@ -35,18 +38,27 @@ def get_mass_rockets(edl_system):
     """
     Returns the curret total mass of all rockets on the edl system. 
 
-    Input: EDL_system dictionary
+    Inputs:
+      - edl_system: dict (must be a dictionary)
 
-    Output: Mass of the EDL system 
-
+    Output: 
+      - m: int/float mass of the rockets
     """
+
     m = edl_system['num_rockets']*(edl_system['rocket']['structure_mass'] + edl_system['rocket']['fuel_mass'])
 
     return m
 
 def get_mass_edl(edl_system):
+    """
+    Returns the total current mass of the edl system 
 
-    # Returns the total current mass of the edl system 
+    Inputs:
+      - edl_system: dict (must be a dictionary)
+
+    Output: 
+      - m: int/float mass of the rockets
+    """
     
     m = int(not(edl_system['parachute']['ejected']))*edl_system['parachute']['mass'] + \
         int(not(edl_system['heat_shield']['ejected']))*edl_system['heat_shield']['mass'] + \
@@ -56,23 +68,29 @@ def get_mass_edl(edl_system):
 
 def get_local_atm_properties(planet, altitude):
     """
+    Returns local atmospheric properties at a given altitude 
 
-        get_local_atm_properties
-        
-        Returns local atmospheric properties at a given altitude. 
-        
-        Usage:
-        density = get_local_atm_properties(planet, altitude) returns the
+    Inputs:
+      - planet: dict contains data of the planet atmosphere at different altitudes
+      - altitude: int/float altitude of the EDL from the surface
+
+    Output: 
+      - density: int/float density of the atmosphere at the planet and altitude in kg/m^3
+      - temperature: int/float returns temperature of the surrounding atmosphere in C
+      - pressure: int/float returns the local pressure of the atmosphere in kPa
+                
+    Usage:
+      - density = get_local_atm_properties(planet, altitude) returns the
         atmospheric density in kg/m^3. Assumed altitude is specified in meters.
         
-        [density, temperature] = get_local_atm_properties(planet, altitude) also
-        returns the local temperature in C.
+    [density, temperature] = get_local_atm_properties(planet, altitude) also
+    returns the local temperature in C.
         
-        [density, temperature, pressure] = get_local_atm_properties(planet, altitude)
-        also returns the local pressure in KPa.
+    [density, temperature, pressure] = get_local_atm_properties(planet, altitude)
+    also returns the local pressure in KPa.
         
-        Note: this function is NOT vectorized. It will not accept a vector of
-        altitudes.
+    Note: this function is NOT vectorized. It will not accept a vector of
+    altitudes.
     """
 
     if altitude > planet['altitude_threshold']:
@@ -87,7 +105,17 @@ def get_local_atm_properties(planet, altitude):
     return density, temperature, pressure
 
 def F_buoyancy_descent(edl_system,planet,altitude):
-    
+    """
+    Returns the net buoyancy force  
+
+    Inputs:
+      - edl_system: dict (must be a dictionary)
+      - planet: dict contains data of the planet atmosphere at different altitudes
+      - altitude: int/float altitude of the EDL from the surface
+
+    Output: 
+      - F: int/float force of buoyancy on the rover  
+    """
     # Compute the net buoyancy force. 
     
     density, _, _ = get_local_atm_properties(planet, altitude)
@@ -97,7 +125,18 @@ def F_buoyancy_descent(edl_system,planet,altitude):
     return F
 
 def F_drag_descent(edl_system,planet,altitude,velocity):
-    
+    """
+    Returns the current drag force on the rover
+
+    Inputs:
+      - edl_system: dict (must be a dictionary)
+      - planet: dict contains data of the planet atmosphere at different altitudes
+      - altitude: int/float current altitude of the EDL from the surface
+      - velocity: int/float current velocity of the rover
+
+    Output: 
+      - F: int/float force of the drag acting on the rover 
+    """
     # Compute the net drag force. 
     
     
