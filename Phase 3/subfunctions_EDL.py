@@ -13,11 +13,15 @@ from scipy.integrate import solve_ivp
 
 
 def get_mass_rover(edl_system):
+    """
+    Computes the mass of the rover defined in rover field of the edl system 
+    struct. Assumes that the rover is defined as a dict corresponding to 
+    the specification of project Phase 1.
 
-    # Computes the mass of the rover defined in rover field of the edl system 
-    # struct. Assumes that the rover is defined as a dict corresponding to 
-    # the specification of project Phase 1.
-    
+    Input: EDL_system dictionary
+
+    Output: Mass of the EDL system
+    """    
     m = 6*(edl_system['rover']['wheel_assembly']['motor']['mass'] + 
            edl_system['rover']['wheel_assembly']['speed_reducer']['mass'] + 
            edl_system['rover']['wheel_assembly']['wheel']['mass']) + \
@@ -28,9 +32,14 @@ def get_mass_rover(edl_system):
     return m
 
 def get_mass_rockets(edl_system):
+    """
+    Returns the curret total mass of all rockets on the edl system. 
 
-    # Returns the curret total mass of all rockets on the edl system. 
+    Input: EDL_system dictionary
 
+    Output: Mass of the EDL system 
+
+    """
     m = edl_system['num_rockets']*(edl_system['rocket']['structure_mass'] + edl_system['rocket']['fuel_mass'])
 
     return m
@@ -46,24 +55,26 @@ def get_mass_edl(edl_system):
     return m
 
 def get_local_atm_properties(planet, altitude):
-    
-    # get_local_atm_properties
-    #
-    # Returns local atmospheric properties at a given altitude. 
-    #
-    # Usage:
-    #  density = get_local_atm_properties(planet, altitude) returns the
-    #  atmospheric density in kg/m^3. Assumed altitude is specified in meters.
-    #
-    #  [density, temperature] = get_local_atm_properties(planet, altitude) also
-    #  returns the local temperature in C.
-    #
-    #  [density, temperature, pressure] = get_local_atm_properties(planet, altitude)
-    #  also returns the local pressure in KPa.
-    #
-    # Note: this function is NOT vectorized. It will not accept a vector of
-    # altitudes.
-    
+    """
+
+        get_local_atm_properties
+        
+        Returns local atmospheric properties at a given altitude. 
+        
+        Usage:
+        density = get_local_atm_properties(planet, altitude) returns the
+        atmospheric density in kg/m^3. Assumed altitude is specified in meters.
+        
+        [density, temperature] = get_local_atm_properties(planet, altitude) also
+        returns the local temperature in C.
+        
+        [density, temperature, pressure] = get_local_atm_properties(planet, altitude)
+        also returns the local pressure in KPa.
+        
+        Note: this function is NOT vectorized. It will not accept a vector of
+        altitudes.
+    """
+
     if altitude > planet['altitude_threshold']:
        temperature = planet['high_altitude']['temperature'](altitude) 
        pressure = planet['high_altitude']['pressure'](altitude)
