@@ -757,6 +757,7 @@ def simulate_edl(edl_system, planet, mission_events, tmax, ITER_INFO):
         
     # simulation time span
     tspan = (0, tmax)
+
     
     # initial state of system
     y0 = np.array([edl_system['velocity'], 

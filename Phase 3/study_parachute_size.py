@@ -10,75 +10,109 @@ from subfunctions_EDL import *
 from define_planet import *
 from define_mission_events import *
 
+def landing_success(edl_out, t, Y):
+    # final EDL state
+    speed_edl   = Y[0, -1]
+    altitude_edl = Y[1, -1]
+    vel_rov_rel = Y[5, -1]
+    pos_rov_rel = Y[6, -1]   # not used in logic, but here if you want it
 
+    rover_touchdown_speed = speed_edl + vel_rov_rel
+
+    danger_speed    = edl_out['sky_crane']['danger_speed']
+    danger_altitude = edl_out['sky_crane']['danger_altitude']
+
+    # if the rover never actually “landed” in the sim, it’s a failure
+    if not edl_out['rover']['on_ground']:
+        return 0
+
+    # SUCCESS: same as first branch in update_edl_state
+    if (altitude_edl >= danger_altitude and
+        abs(rover_touchdown_speed) <= abs(danger_speed)):
+        return 1
+    else:
+        # includes both “too fast” and “too low” failure conditions
+        return 0
+    
 # *************************************
 # load dicts that define the EDL system (includes rover), planet,
 # mission events and so forth.
-edl_system = define_edl_system_1()
 mars = define_planet()
 mission_events = define_mission_events()
 
+#parachute diameters to study
+diameters = np.arange(14,19.5,0.5)
 
-# Overrides what might be in the loaded data to establish our desired
-# initial conditions
-edl_system['altitude'] = 11000    # [m] initial altitude
-edl_system['velocity'] = -590     # [m/s] initial velocity
-# rockets are off initially
-edl_system['parachute']['deployed'] = True   # our parachute is open
-edl_system['parachute']['ejected'] = False   # and still attached
-edl_system['parachute']['diameter'] = np.arange(14,19.5,0.5) # establishing the range want to use for each diameter 
-# heat shield is not ejected initially
-# sky crane is off initially
-# speed controller is off initially
- # postion controller is off initially
-edl_system['rover']['on_ground'] = False # the rover has not yet landed
+terminal_times = [] #  final simulated time for each diameter
+landing_speeds = [] # final rover speed ( relative to ground)
+landing_success_vals = [] # 1 = success, 0 = failure
 
 tmax = 2000   # [s] maximum simulated time
 
-# the simulation. changing last argument to false turns off message echo
-[t, Y, edl_system] = simulate_edl(edl_system, mars, mission_events, tmax, True)
+# Overrides what might be in the loaded data to establish our desired
+# initial conditions
+for D in diameters:
+    # fresh EDL system fro each run
+    edl_system = define_edl_system_1()
 
-# visualize the simulation results
-plot1 = plt.figure(0)
-fig, axs = plt.subplots(7) 
-plt.tight_layout()
-axs[0].plot(t, Y[0, :])
-axs[0].set_title('velocity vs. time', fontsize=10)
-axs[0].grid()
-axs[1].plot(t,Y[1, :])
-axs[1].set_title('altitude vs. time', fontsize=10)
-axs[1].grid()
-axs[2].plot(t,Y[2, :])
-axs[2].set_title('fuel mass vs. time', fontsize=10)
-axs[2].grid()
-axs[3].plot(t,Y[3, :])
-axs[3].set_title('speed error integral vs. time', fontsize=10)
-axs[3].grid()
-axs[4].plot(t,Y[4, :])
-axs[4].set_title('position error integral vs. time', fontsize=10)
-axs[4].grid()
-axs[5].plot(t,Y[5, :])
-axs[5].set_title('velocity of rover relative to sky crane vs. time', fontsize=10)
-axs[5].grid()
-axs[6].plot(t,Y[6, :])
-axs[6].set_title('position of rover relative to sky crane vs. time', fontsize=10)
-axs[6].grid()
+    edl_system['altitude'] = 11000    # [m] initial altitude
+    edl_system['velocity'] = -590     # [m/s] initial velocity
+    # rockets are off initially
+    edl_system['parachute']['deployed'] = True   # our parachute is open
+    edl_system['parachute']['ejected'] = False   # and still attached
+    edl_system['parachute']['diameter'] = D # this allows evaluation of simulation at a certain diameter
+    # heat shield is not ejected initially
+    # sky crane is off initially
+    # speed controller is off initially
+    # postion controller is off initially
+    edl_system['rover']['on_ground'] = False # the rover has not yet landed
 
-plot2 = plt.figure(1)
-fig2, axs2 = plt.subplots(2)
-plt.tight_layout()
-sky_crane_hover_pos = Y[1, :]
-sky_crane_speed = Y[0, :]
-ignore_indices = sky_crane_hover_pos>2*20
-sky_crane_hover_pos[ignore_indices] = np.NaN 
-sky_crane_speed[ignore_indices] = np.NaN  
-axs2[0].plot(t,sky_crane_speed)
-axs2[0].set_title('speed of sky crane vs. time')
-axs2[0].grid()
-axs2[1].plot(t,sky_crane_hover_pos)
-axs2[1].set_title('position of sky crane vs. time')
-axs2[1].grid()
+    # run the simulation; last argument False to supress message spam
+    t, Y, edl_out = simulate_edl(edl_system, mars, mission_events, tmax, False)
 
+    # used values above for state variables y = Y, see below
+    terminal_times.append(t[-1])
+    landing_speeds.append(Y[0,-1])
+    landing_success_vals.append(landing_success(edl_out,t,Y))
+
+    '''# unpack the input state vector into variables with more readable names
+    # 
+    vel_edl = y[0]       # [m/s] velocity of EDL system
+    altitude_edl = y[1]  # [m] altitude of EDL system
+    fuel_mass = y[2]     # [kg] total mass of fuel in EDL system 
+    ei_vel = y[3]        # [m/s] error integral for velocity error 
+    ei_pos = y[4]        # [m] error integral for position (altitude) error 
+    vel_rov = y[5]       # [m/s] velocity of rover relative to sky crane
+    pos_rov = y[6]       # [m] position of rover relative to sky crane'''
+
+# ----------------------------------------------------------
+# ONE PAGE: All three analysis plots stacked vertically
+# ----------------------------------------------------------
+fig, axs = plt.subplots(3, 1, figsize=(8, 12))
+plt.tight_layout(pad=4.0)
+
+# 1. Termination time vs diameter
+axs[0].plot(diameters, terminal_times, marker='o')
+axs[0].set_xlabel('Parachute diameter [m]')
+axs[0].set_ylabel('Termination time [s]')
+axs[0].set_title('Termination Time vs Parachute Diameter')
+axs[0].grid(True)
+
+# 2. Touchdown speed vs diameter
+axs[1].plot(diameters, landing_speeds, marker='o')
+axs[1].set_xlabel('Parachute diameter [m]')
+axs[1].set_ylabel('Touchdown Speed [m/s]')
+axs[1].set_title('Touchdown Speed vs Parachute Diameter')
+axs[1].grid(True)
+
+# 3. Landing success vs diameter
+axs[2].plot(diameters, landing_success_vals, marker='o')
+axs[2].set_xlabel('Parachute diameter [m]')
+axs[2].set_ylabel('Landing Success (1=success)')
+axs[2].set_title('Landing Success vs Parachute Diameter')
+axs[2].grid(True)
+
+plt.show()
 
 # Plot Simulated time (i.e., time at termination of simulation) vs. parachute diameter
 # Plot Rover speed (relative to ground) at simulation termination vs. parachute diameter
