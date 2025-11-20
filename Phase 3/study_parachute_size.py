@@ -106,11 +106,15 @@ axs[1].set_title('Touchdown Speed vs Parachute Diameter')
 axs[1].grid(True)
 
 # 3. Landing success vs diameter
-axs[2].plot(diameters, landing_success_vals, marker='o')
-axs[2].set_xlabel('Parachute diameter [m]')
-axs[2].set_ylabel('Landing Success (1=success)')
+colors = ['green' if s == 1 else 'red' for s in landing_success_vals]
+axs[2].bar(diameters, landing_success_vals,
+           width=0.35,
+           color=colors)
+axs[2].set_xlabel('Parachute Diameter [m]')
+axs[2].set_ylabel('Landing Success (1=success, 0=failure)')
 axs[2].set_title('Landing Success vs Parachute Diameter')
-axs[2].grid(True)
+axs[2].set_ylim(-0.1, 1.2)
+axs[2].grid(axis='y')
 
 plt.show()
 

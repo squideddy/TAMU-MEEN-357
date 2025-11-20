@@ -85,22 +85,34 @@ def F_buoyancy_descent(edl_system,planet,altitude):
     
     return F
 
+# *************************************
+# New function using mach efficiency
+def MEF_from_Mach(M):
+    Mach_numbers = np.array([0.25, 0.5, 0.65, 0.7, 0.8, 0.9, 0.95,
+                          1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
+                          1.8, 1.9, 2.0, 2.2, 2.5, 2.6])
+    MEF_data = np.array([1.0, 1.0, 1.0, 0.97, 0.91, 0.72, 0.66,
+                          0.75, 0.90, 0.96, 0.99, 0.999, 0.992,
+                          0.98,  0.91, 0.85, 0.82, 0.75, 0.64, 0.62])
+    MEF = np.interp(M, Mach_numbers, MEF_data)
+    return MEF
+
 def F_drag_descent(edl_system,planet,altitude,velocity):
     
     # Compute the net drag force. 
-    
-    
     # compute the density of planetary atmosphere at current altitude
     density, _, _ = get_local_atm_properties(planet, altitude)
     
     # This is the (1/2)*density*velocity^2 part of the drag model. The missing
     # bit is area*Cd, which we'll figure out below.
     rhov2=0.5*density*velocity**2
-    
-    
+
+    # We will consider the mach number, and modify CD
+    M = v2M_Mars(abs(velocity),altitude)
+    MEF = MEF_from_Mach(M)
+    Cd_mod = edl_system['parachute']['Cd']*MEF
     # *************************************
     # Determine which part(s) of the EDL system are contributing to drag
-    
     # If the heat shield has not been ejected, use that as our drag
     # contributor. Otherwise, use the sky crane.
     if not edl_system['heat_shield']['ejected']:
@@ -112,13 +124,12 @@ def F_drag_descent(edl_system,planet,altitude,velocity):
     # if the parachute is in the deployed state, need to account for its area
     # in the drag calculation
     if edl_system['parachute']['deployed'] and not edl_system['parachute']['ejected']:
-        ACd_parachute = np.pi*(edl_system['parachute']['diameter']/2.0)**2*edl_system['parachute']['Cd']
+        D_parachute = edl_system['parachute']['diameter']
+        ACd_parachute = np.pi * (D_parachute/2.0)**2 * Cd_parachute_mod
     else:
         ACd_parachute = 0.0
-    
-    
-    # This computes the ultimate drag force
-    F=rhov2*(ACd_body+ACd_parachute)
+    # Total drag force
+    F = rhov2 * (ACd_body + ACd_parachute)
     
     return F
 
