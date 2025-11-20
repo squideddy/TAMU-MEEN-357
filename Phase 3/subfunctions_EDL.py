@@ -87,6 +87,7 @@ def F_buoyancy_descent(edl_system,planet,altitude):
 
 # *************************************
 # New function using mach efficiency
+# New function using mach efficiency
 def MEF_from_Mach(M):
     Mach_numbers = np.array([0.25, 0.5, 0.65, 0.7, 0.8, 0.9, 0.95,
                           1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
@@ -125,11 +126,13 @@ def F_drag_descent(edl_system,planet,altitude,velocity):
     # in the drag calculation
     if edl_system['parachute']['deployed'] and not edl_system['parachute']['ejected']:
         D_parachute = edl_system['parachute']['diameter']
-        ACd_parachute = np.pi * (D_parachute/2.0)**2 * Cd_parachute_mod
+        A_parachute = np.pi * (D_parachute/2.0)**2
+        ACd_parachute = A_parachute * Cd_mod
     else:
         ACd_parachute = 0.0
     # Total drag force
     F = rhov2 * (ACd_body + ACd_parachute)
+
     
     return F
 
