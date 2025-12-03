@@ -21,8 +21,8 @@ planet = define_planet()
 edl_system = define_edl_system()
 mission_events = define_mission_events()
 edl_system = define_chassis(edl_system,'carbon')
-edl_system = define_motor(edl_system,'base')
-edl_system = define_batt_pack(edl_system,'PbAcid-1', 10)
+edl_system = define_motor(edl_system,'base_he')
+edl_system = define_batt_pack(edl_system,'LiFePO4', 10)
 tmax = 5000
 
 # Overrides what might be in the loaded data to establish our desired
@@ -59,7 +59,7 @@ max_batt_energy_per_meter = edl_system['rover']['power_subsys']['battery']['capa
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 # initial guess
-x0 = np.array([19, .7, 550.0, 0.09, 250.0]) 
+x0 = np.array([19, .45, 550.0, 0.09, 170.0]) 
 
 # lambda for the objective function
 obj_f = lambda x: obj_fun_time(x,edl_system,planet,mission_events,tmax,
@@ -154,15 +154,18 @@ c = constraints_edl_system(res.x,edl_system,planet,mission_events,tmax,experimen
                            max_batt_energy_per_meter)
 
 feasible = np.max(c - np.zeros(len(c))) <= 0
+print(feasible)
+
 if feasible:
     xbest = res.x
     fbest = res.fun
+"""   ##############   REMOVE THESE TRIPLE QUOTES #####################
 else:  # nonsense to let us know this did not work
     xbest = [99999, 99999, 99999, 99999, 99999]
     fval = [99999]
     raise Exception('Solution not feasible, exiting code...')
     sys.exit()
-
+"""
 # What about the design variable bounds?
 
 # The following will rerun your best design and present useful information
