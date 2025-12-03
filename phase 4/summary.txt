@@ -1,0 +1,67 @@
+travel at least 1 km on one charge on the terrain in experiment 1
+
+Major considerations:
+1: rover speed
+2: rover cost
+3: rover battery usage
+
+
+
+
+Submission
+zipfile named: P4_MEEN357_SEC501_FA2025_TEAM18.zip
+
+zip file includes
+Report: FA25_Sec501_Team18.pdf
+a. How you formulated the design problem. 
+b. Which design solutions you considered. 
+c. How you selected your final design. 
+d. Which numerical methods you used in this process. 
+e. A description of your final design. 
+f. Data about its properties/performance.
+
+design description : FA25_Sec501_Team18.pickle
+
+and supporting considerations
+
+Contributions named: FA25_Sec501_Tea18_collaboration.pdf
+
+
+Design decisions:
+
+Rolling resistance changes with wheel radius
+
+weight of chassis and strength of chassis (must withstand loads applied)
+
+chassis options: 3 types of material
+
+Cost modeling with get_cost_rover and get_cost_edl
+
+motor options: 6 types of motors
+
+battery options: 6 different battery packs 
+
+
+Variables 
+            Parachute diameter      continuous 
+            Fuel Mass               continuous 
+            Wheel Radius            continuous 
+            Gear Diameter           continuous 
+            Chassis Mass            continuous 
+            Motor Type              discrete 
+Battery Type and number of modules  discrete 
+            Chassis Material        discrete
+
+
+Constraints:
+rover landing speed - less than 1 m/s
+distance traveled 1000m
+minimum strength - 40000
+maximum cost - 7.2 million
+
+Bounds:
+Parachute Diameter 14-19 m 
+Fuel Mass 100-290 kg 
+Wheel Radius 0.2- 0.7 m 
+Gear Diameter 0.05-0.12 m 
+Chassis Mass 250-800 kg
