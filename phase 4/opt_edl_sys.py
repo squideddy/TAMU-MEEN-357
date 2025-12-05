@@ -20,11 +20,11 @@ import sys
 
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
-chassis_list = ['carbon', 'steel', 'magnesium']
+chassis_list = ['magnesium']
 battery_list = ['LiFePO4', 'NiMH', 'NiCD', 'PbAcid-1', 'PbAcid-2', 'PbAcid-3']
 motor_list = ['base', 'base_he', 'torque', 'torque_he', 'speed', 'speed_he']
 best= 0
-
+best_time = 1e10
 
 planet = define_planet()
 edl_system = define_edl_system()
@@ -36,7 +36,7 @@ for chassis in chassis_list:
         for motor in motor_list:
             edl_system = define_motor(edl_system,motor)
 
-            for modules in range(3,15):
+            for modules in range(5,13):
 
                 for parachute_diameter in np.arange(14,19.5,1.0):
                     for wheel_radius in np.arange(0.2,0.8,0.1):
