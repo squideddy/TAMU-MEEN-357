@@ -92,7 +92,7 @@ for chassis in chassis_list:
 
 
                                     # initial guess
-                                    x0 = np.array([15, .45, Chassis_mass_guess, 0.09, 170.0]) 
+                                    x0 = np.array([parachute_diameter, wheel_radius, Chassis_mass_guess, speed_reducer_diam, rocket_fuel_mass]) 
 
                                     # lambda for the objective function
                                     obj_f = lambda x: obj_fun_time(x,edl_system,planet,mission_events,tmax,
@@ -286,6 +286,7 @@ for chassis in chassis_list:
                                             pickle.dump(edl_system, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
                 
+
 
 print('Best overall design found:') 
 print(best_time)
