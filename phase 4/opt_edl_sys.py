@@ -20,7 +20,7 @@ import sys
 
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
-chassis_list = ['magnesium']
+chassis_list = ['steel']
 battery_list = ['LiFePO4', 'NiMH', 'NiCD', 'PbAcid-1', 'PbAcid-2', 'PbAcid-3']
 motor_list = ['base', 'base_he', 'torque', 'torque_he', 'speed', 'speed_he']
 best= 0
