@@ -1,0 +1,20 @@
+Configuration:
+Chassis Material: steel
+Battery Type: NiMh
+Number of Battery Modules: 12
+Motor Type: base
+
+Results:
+Optimized parachute diameter   = 18.985231 [m]
+Optimized rocket fuel mass     = 250.008066 [kg]
+Time to complete EDL mission   = 372.089561 [s]
+Rover velocity at landing      = -0.099971 [m/s]
+Optimized wheel radius         = 0.699010 [m]
+Optimized d2                   = 0.090018 [m]
+Optimized chassis mass         = 549.730605 [kg]
+Time to complete rover mission = 2008.355906 [s]
+Total mission time             = 2380.445467 [s]
+Average velocity               = 0.496755 [m/s]
+Distance traveled              = 1000.000000 [m]
+Battery energy per meter       = 489.045258 [J/m]
+Total cost                     = 4672995.020422 [$]
