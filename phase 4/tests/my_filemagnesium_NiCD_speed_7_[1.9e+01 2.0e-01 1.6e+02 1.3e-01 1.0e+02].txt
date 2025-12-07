@@ -1,0 +1,26 @@
+{'altitude': np.float64(7.597928046593235), 'velocity': np.float64(5.2461164669088916e-05), 'num_rockets': 8, 'volume': 150, 'parachute': {'deployed': True, 'ejected': True, 'diameter': np.float64(14.000511080954713), 'Cd': 0.615, 'cost_per_A': 1000.0, 'mass': 185.0}, 'heat_shield': {'ejected': True, 'mass': 225.0, 'diameter': 4.5, 'Cd': 0.35}, 'rocket': {'on': True, 'structure_mass': 8.0, 'initial_fuel_mass': np.float64(101.02027125568661), 'cost_per_kg': 1500, 'fuel_mass': np.float64(33.92060598190668), 'effective_exhaust_velocity': 4500.0, 'max_thrust': 3100.0, 'min_thrust': 40.0}, 'speed_control': {'on': False, 'Kp': 2000, 'Kd': 20, 'Ki': 50, 'target_velocity': -3.0}, 'position_control': {'on': True, 'Kp': 2000, 'Kd': 1000, 'Ki': 50, 'target_altitude': 7.6}, 'sky_crane': {'on': False, 'danger_altitude': 4.5, 'danger_speed': -1.0, 'mass': 35.0, 'area': 16.0, 'Cd': 0.9, 'max_cable': 7.6, 'velocity': -0.1}, 'rover': {'wheel_assembly': {'wheel': {'radius': np.float64(0.20005109591994377), 'mass': 1}, 'speed_reducer': {'type': 'reverted', 'diam_pinion': 0.04, 'diam_gear': np.float64(0.05000721335885386), 'mass': 1.5}, 'motor': {'torque_stall': 123.75, 'torque_noload': 0, 'speed_noload': 7.7, 'mass': 5.0, 'effcy_tau': array([  0.      ,   9.91875 ,  19.8375  ,  39.675   ,  74.390625,
+       163.659375]), 'effcy': array([0.      , 0.7935  , 0.991875, 0.965425, 0.727375, 0.066125]), 'type': 'speed', 'cost': 300000.0}}, 'chassis': {'mass': np.float64(250.05805374754775), 'type': 'magnesium', 'specific_strength': 250, 'strength': 164750}, 'science_payload': {'mass': 75}, 'power_subsys': {'mass': 90, 'battery': {'battery_type': 'NiCD', 'num_modules': 10, 'mass': 6.69, 'cost': 250000, 'capacity': 90600.0}}, 'on_ground': True, 'telemetry': {'Time': array([0.00000000e+00, 4.37546902e-05, 8.75093803e-05, ...,
+       1.06959175e+03, 1.07059175e+03, 1.07156209e+03]), 'completion_time': np.float64(1071.562085745875), 'velocity': array([0.3125    , 0.3128228 , 0.31314543, ..., 0.93498009, 0.93515837,
+       0.93533544]), 'position': array([0.00000000e+00, 1.36852598e-05, 2.73842930e-05, ...,
+       9.98157432e+02, 9.99092501e+02, 1.00000000e+03]), 'distance_traveled': np.float64(1000.0), 'max_velocity': np.float64(0.9589722437181812), 'average_velocity': np.float64(0.9258787592341722), 'power': array([206.33449939, 206.44857635, 206.56238766, ...,  46.39885643,
+        46.24416024,  46.09044409]), 'battery_energy': np.float64(501597.48305545683), 'energy_per_distance': np.float64(501.59748305545685)}}, 'rover_touchdown_speed': np.float64(-0.09994753883533092), 'team_name': 'FunTeamName', 'team_number': 99}
+Chassis: magnesium
+Battery: NiCD
+Motor: speed
+Modules: 7
+
+parachute_diameter: 19.0
+wheel_radius: 0.2
+speed_reducer_diam: 0.13
+rocket_fuel_mass: 100.0
+
+Optimization Result:
+ message: Iteration limit reached
+ success: False
+  status: 9
+     fun: 1663.0935114530412
+       x: [ 1.400e+01  2.001e-01  2.501e+02  5.001e-02  1.010e+02]
+     nit: 8
+     jac: [ 3.076e+01 -5.311e+03 -3.196e+02  4.011e+04 -1.973e+00]
+    nfev: 102
+    njev: 8
