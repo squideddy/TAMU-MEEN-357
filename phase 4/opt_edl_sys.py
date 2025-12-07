@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 """
 Created on Mon Nov 15 22:58:03 2021
 
@@ -15,13 +15,13 @@ from scipy.optimize import NonlinearConstraint
 import pickle
 import sys
 
-
+# hello world
 
 
 bounds = Bounds([14, 0.2, 250, 0.05, 100], [19, 0.7, 800, 0.12, 290])
 
 chassis_list = ['magnesium']
-battery_list = ['LiFePO4', 'NiMH', 'NiCD', 'PbAcid-1', 'PbAcid-2', 'PbAcid-3']
+battery_list = ['NiMH', 'NiCD', 'PbAcid-1', 'PbAcid-2', 'PbAcid-3']
 motor_list = ['base', 'base_he', 'torque', 'torque_he', 'speed', 'speed_he']
 best= 0
 best_time = 1e10
@@ -36,13 +36,14 @@ for chassis in chassis_list:
         for motor in motor_list:
             edl_system = define_motor(edl_system,motor)
 
-            for modules in range(5,13):
 
-                for parachute_diameter in np.arange(14,19.5,1.0):
-                    for wheel_radius in np.arange(0.2,0.8,0.1):
+            for modules in range(5,10):
+                dobreak = False
+                for parachute_diameter in np.linspace(14,19,2):
+                    for wheel_radius in np.linspace(0.2,0.8,2):
                         # for chassis_mass in np.arange(250,850,50):
-                            for speed_reducer_diam in np.arange(0.05,0.13,0.01):
-                                for rocket_fuel_mass in np.arange(100,300,20):
+                            for speed_reducer_diam in np.linspace(0.05,0.13,2):
+                                for rocket_fuel_mass in np.linspace(100,300,2):
 
                                     # the following calls instantiate the needed structs and also make some of
                                     # our design selections (battery type, etc.)
@@ -107,6 +108,7 @@ for chassis in chassis_list:
                                     cons_f = lambda x: constraints_edl_system(x,edl_system,planet,mission_events,
                                                                             tmax,experiment,end_event,min_strength,
                                                                             max_rover_velocity,max_cost,max_batt_energy_per_meter)
+
 
                                     nonlinear_constraint = NonlinearConstraint(cons_f, -np.inf, 0)  # for trust-constr
                                     ineq_cons = {'type' : 'ineq',
@@ -189,6 +191,9 @@ for chassis in chassis_list:
                                                             end_event,min_strength,max_rover_velocity,max_cost,
                                                             max_batt_energy_per_meter)
                                     print(c)
+                                    if (edl_system['rover']['telemetry']['energy_per_distance']- max_batt_energy_per_meter)<0:
+                                        dobreak = True
+
                                     
                                     with open(f"my_file{chassis}_{battery}_{motor}_{modules}_{x0}.txt", 'w') as file:
                                         file.write(str(edl_system))
@@ -198,6 +203,14 @@ for chassis in chassis_list:
                                         file.write('Motor: ' + motor + '\n')
                                         file.write('Modules: ' + str(modules) + '\n')
                                         file.write('\n')
+                                        file.write('parachute_diameter: ' + str(parachute_diameter) + '\n')
+                                        file.write('wheel_radius: ' + str(wheel_radius) + '\n')
+                                        file.write('speed_reducer_diam: ' + str(speed_reducer_diam) + '\n')
+                                        file.write('rocket_fuel_mass: ' + str(rocket_fuel_mass) + '\n')
+                                        file.write('\n')
+                                        file.write('Optimization Result:\n')
+                                        file.write(str(res) + '\n')
+
                                     feasible = np.max(c - np.zeros(len(c))) <= 0
                                     print(feasible)
 
@@ -284,7 +297,11 @@ for chassis in chassis_list:
                                         print(best_design)
                                         with open(f'FA24_501team99_{best}.pickle', 'wb') as handle:
                                             pickle.dump(edl_system, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                                    else:
+                                        break
 
+            if dobreak:
+                break
                 
 
 
